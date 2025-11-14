@@ -1,0 +1,1 @@
+"jre\bin\java" --module-path="jre\lib" --add-modules=javafx.controls,javafx.fxml -jar jre\POST-1.0.3-jar-with-dependencies.jar

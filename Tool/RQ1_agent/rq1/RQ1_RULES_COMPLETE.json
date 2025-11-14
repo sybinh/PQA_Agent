@@ -1,0 +1,523 @@
+{
+  "total_rules": 37,
+  "categories": {
+    "IssueSW": 3,
+    "IssueFD": 2,
+    "BC": 4,
+    "FC": 4,
+    "Release": 8,
+    "Dates": 1,
+    "IRM": 3,
+    "RRM": 3,
+    "Other": 9
+  },
+  "rules_by_category": {
+    "IssueSW": [
+      {
+        "rule_name": "Rule_IssueSW_ASIL",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1IssueSW",
+        "fields_checked": [
+          "ASIL_CLASSIFICATION",
+          "CHILDREN"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Issue.NEW,\n                //                LifeCycleState_Issue.EVALUATED,\n                LifeCycleState_Issue.CLOSED,\n                LifeCycleState_Issue.CANCELED,\n                LifeCycleState_Issue.CONFLICTED"
+        ]
+      },
+      {
+        "rule_name": "Rule_IssueSW_FmeaCheck",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1IssueSW",
+        "fields_checked": [
+          "FMEA_CHANGE_COMMENT",
+          "FMEA_COMMENT",
+          "FMEA_STATE",
+          "SUBMIT_DATE"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "SubmitDate >= 2015-1-1"
+        ]
+      },
+      {
+        "rule_name": "Rule_IssueSW_MissingAffectedIssueComment",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1IssueSW",
+        "fields_checked": [
+          "AFFECTED_ISSUE_COMMENT",
+          "CATEGORY",
+          "PROJECT",
+          "SCOPE",
+          "SUBMIT_DATE"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: \n                LifeCycleState_Issue.EVALUATED,\n                LifeCycleState_Issue.COMMITTED,\n                LifeCycleState_Issue.IMPLEMENTED,\n                LifeCycleState_Issue.CLOSED"
+        ]
+      }
+    ],
+    "IssueFD": [
+      {
+        "rule_name": "Rule_IssueFD_Pilot",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1IssueFD",
+        "fields_checked": [
+          "HAS_MAPPED_COLLECTIONS",
+          "HAS_MAPPED_PST",
+          "IS_PILOT",
+          "PARENT"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_IssueFD_WithoutLinkToBc",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1IssueFD",
+        "fields_checked": [
+          "MAPPED_BC"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Issue.EVALUATED"
+        ]
+      }
+    ],
+    "BC": [
+      {
+        "rule_name": "Rule_Bc_CheckPstDates",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1BcRelease",
+        "fields_checked": [
+          "MAPPED_PST",
+          "PLANNED_DATE",
+          "REQUESTED_DELIVERY_DATE"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Release.CANCELED, LifeCycleState_Release.DEVELOPED, LifeCycleState_Release.CONFLICTED, LifeCycleState_Release.CLOSED"
+        ]
+      },
+      {
+        "rule_name": "Rule_Bc_Close",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1BcRelease",
+        "fields_checked": [
+          "LIFE_CYCLE_STATE",
+          "PLANNED_DATE"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Bc_NamingConvention",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1BcRelease",
+        "fields_checked": [
+          "Logger"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Bc_WithoutLinkToPst",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1BcRelease",
+        "fields_checked": [
+          "MAPPED_PST"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      }
+    ],
+    "FC": [
+      {
+        "rule_name": "Rule_Fc_NamingConvention",
+        "title": "N/A",
+        "description": "\n",
+        "record_type": "DmRq1FcRelease",
+        "fields_checked": [
+          "Logger"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Fc_PlannedDate",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1FcRelease",
+        "fields_checked": [
+          "MAPPED_BC",
+          "PLANNED_DATE",
+          "REQUESTED_DELIVERY_DATE"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Release.CANCELED, LifeCycleState_Release.DEVELOPED, LifeCycleState_Release.CONFLICTED, LifeCycleState_Release.CLOSED"
+        ]
+      },
+      {
+        "rule_name": "Rule_Fc_ReqDate",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1FcRelease",
+        "fields_checked": [
+          "MAPPED_BC",
+          "PLANNED_DATE",
+          "REQUESTED_DELIVERY_DATE"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Release.CANCELED, LifeCycleState_Release.DEVELOPED, LifeCycleState_Release.CONFLICTED, LifeCycleState_Release.CLOSED"
+        ]
+      },
+      {
+        "rule_name": "Rule_Fc_WithoutLinkToBc",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1FcRelease",
+        "fields_checked": [
+          "MAPPED_BC"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      }
+    ],
+    "Release": [
+      {
+        "rule_name": "Rule_CheckDatesForPvar",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1PvarRelease",
+        "fields_checked": [
+          "LIFE_CYCLE_STATE",
+          "PLANNED_DATE",
+          "PLANNED_DATE_DERIVATIVES",
+          "PLANNING_FREEZE"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_CheckDatesForPver",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1PverRelease",
+        "fields_checked": [
+          "IMPLEMENTATION_FREEZE",
+          "LIFE_CYCLE_STATE",
+          "PLANNED_DATE",
+          "PLANNING_FREEZE"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Irm_PstRelease_IssueSw_Severity",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Irm_Pst_IssueSw",
+        "fields_checked": [
+          "HAS_MAPPED_ISSUE",
+          "PRIORITY",
+          "PRIORITY_COMMENT",
+          "SEVERITY"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Pvar_Derivatives",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1PvarRelease",
+        "fields_checked": [
+          "DERIVATIVES",
+          "PLANNED_DATE",
+          "PLANNED_DATE_DERIVATIVES",
+          "PROJECT"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Pver_Derivatives",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1PverRelease",
+        "fields_checked": [
+          "DERIVATIVES"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Pver_NotSuitableForINMA",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Pver",
+        "fields_checked": [
+          "IN_MA_BUILD_STATUS",
+          "READY_FOR_IN_MA"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Release_Predecessor",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Release",
+        "fields_checked": [
+          "PREDECESSOR"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Release.NEW"
+        ]
+      },
+      {
+        "rule_name": "Rule_Rrm_Pver_Bc_PilotSet",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Rrm_Pst_Bc",
+        "fields_checked": [
+          "IS_PILOT",
+          "MAPPED_PARENT"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      }
+    ],
+    "Dates": [
+      {
+        "rule_name": "Rule_CheckDatesForBcAndFc",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Release",
+        "fields_checked": [
+          "IMPLEMENTATION_FREEZE",
+          "LIFE_CYCLE_STATE",
+          "PLANNED_DATE",
+          "PLANNING_FREEZE"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      }
+    ],
+    "IRM": [
+      {
+        "rule_name": "Rule_Irm_OnlyOnePilotDerivative",
+        "title": "N/A",
+        "description": "\n",
+        "record_type": "DmRq1Irm_Pst_IssueSw",
+        "fields_checked": [
+          "EXCHANGE_WORKFLOW",
+          "IS_PILOT",
+          "MAPPING_TO_DERIVATIVES",
+          "m"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_IRM.CANCELED, LifeCycleState_IRM.QUALIFIED, LifeCycleState_IRM.IMPLEMENTED"
+        ]
+      },
+      {
+        "rule_name": "Rule_Irm_Prg_HintForExclude",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Irm_Pst_IssueSw",
+        "fields_checked": [
+          "PLANNING_ACTION"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Irm_Prg_IssueSw_PilotSet",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Irm_Pst_IssueSw",
+        "fields_checked": [
+          "HAS_MAPPED_RELEASE",
+          "IS_PILOT"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      }
+    ],
+    "RRM": [
+      {
+        "rule_name": "Rule_Rrm_Bc_Fc_DeliveryDate",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Rrm_Bc_Fc",
+        "fields_checked": [
+          "IMPLEMENTATION_FREEZE",
+          "Logger",
+          "MAPPED_CHILDREN",
+          "MAPPED_PARENT",
+          "PLANNED_DATE",
+          "REQUESTED_DELIVERY_DATE",
+          "REQUESTED_IMPLEMENTATION_DATE",
+          "class"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_RRM.NEW, LifeCycleState_RRM.IMPLEMENTED, LifeCycleState_RRM.CANCELED, LifeCycleState_RRM.CONFLICTED"
+        ]
+      },
+      {
+        "rule_name": "Rule_Rrm_Pst_Bc_DeliveryDate",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Rrm_Pst_Bc",
+        "fields_checked": [
+          "IMPLEMENTATION_FREEZE",
+          "PLANNED_DATE",
+          "REQUESTED_DELIVERY_DATE",
+          "REQUESTED_IMPLEMENTATION_DATE"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_RRM.NEW, LifeCycleState_RRM.IMPLEMENTED, LifeCycleState_RRM.CANCELED, LifeCycleState_RRM.CONFLICTED"
+        ]
+      },
+      {
+        "rule_name": "Rule_Rrm_Pst_Bc_HintForExclude",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Rrm_Pst_Bc",
+        "fields_checked": [
+          "INTEGRATION_ACTION"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      }
+    ],
+    "Other": [
+      {
+        "rule_name": "Rule_AccountNumberFormat",
+        "title": "N/A",
+        "description": "\n",
+        "record_type": "DmElementI",
+        "fields_checked": [
+          "POOL_PROJECT",
+          "PROJECT",
+          "VW",
+          "class"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Project.CANCELED, LifeCycleState_Project.CLOSED"
+        ]
+      },
+      {
+        "rule_name": "Rule_CheckForMissing_BaselineLink",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1SoftwareRelease",
+        "fields_checked": [
+          "DESCRIPTION",
+          "INTERNAL_COMMENT",
+          "SUBMIT_DATE",
+          "TAGLIST"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Release.DEVELOPED, LifeCycleState_Release.CLOSED",
+          "SubmitDate >= 2019-1-1"
+        ]
+      },
+      {
+        "rule_name": "Rule_Ecu_LumpensammlerExists",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1SwCustomerProject_Leaf",
+        "fields_checked": [
+          "ALL_PST"
+        ],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Project.CANCELED, LifeCycleState_Project.CLOSED"
+        ]
+      },
+      {
+        "rule_name": "Rule_Ecu_PstLines",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1SwCustomerProject_Leaf",
+        "fields_checked": [],
+        "severity": "WARNING",
+        "conditions": [
+          "LifeCycleState: LifeCycleState_Project.CANCELED, LifeCycleState_Project.CLOSED"
+        ]
+      },
+      {
+        "rule_name": "Rule_Info_InternalComment",
+        "title": "N/A",
+        "description": "\n",
+        "record_type": "DmRq1BaseElement",
+        "fields_checked": [
+          "INTERNAL_COMMENT"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_Prg_Lumpensammler",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1Pst",
+        "fields_checked": [
+          "Logger",
+          "SCOPE",
+          "class"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_ToDo_InternalComment",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1BaseElement",
+        "fields_checked": [
+          "INTERNAL_COMMENT"
+        ],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_UnknownIssue_Exists",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1UnknownIssue",
+        "fields_checked": [],
+        "severity": "WARNING",
+        "conditions": []
+      },
+      {
+        "rule_name": "Rule_UnknownProject_Exists",
+        "title": "N/A",
+        "description": "",
+        "record_type": "DmRq1UnknownProject",
+        "fields_checked": [],
+        "severity": "WARNING",
+        "conditions": []
+      }
+    ]
+  }
+}

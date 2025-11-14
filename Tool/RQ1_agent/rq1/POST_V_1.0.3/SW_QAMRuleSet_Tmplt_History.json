@@ -1,0 +1,233 @@
+[
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Unnamed: 3":null,
+    "Unnamed: 4":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"History",
+    "Unnamed: 2":null,
+    "Unnamed: 3":null,
+    "Unnamed: 4":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Unnamed: 3":null,
+    "Unnamed: 4":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":"Date",
+    "Unnamed: 3":"Name",
+    "Unnamed: 4":"Change"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"0.01",
+    "Unnamed: 2":1444089600000,
+    "Unnamed: 3":"Kerecseny",
+    "Unnamed: 4":"Initial Version"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"0.02",
+    "Unnamed: 2":1444694400000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"Added QAM Rule Set"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"0.03",
+    "Unnamed: 2":1446681600000,
+    "Unnamed: 3":"Nagarajan \/ Kerecseny",
+    "Unnamed: 4":"Additional QAM Rule Set, discription of additional information"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.00",
+    "Unnamed: 2":1447977600000,
+    "Unnamed: 3":"Kerecseny",
+    "Unnamed: 4":"Added DGS_RolloutDate for QAM Rule Set"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.10",
+    "Unnamed: 2":1448496000000,
+    "Unnamed: 3":"Kerecseny",
+    "Unnamed: 4":"Added Planned Introduction Date "
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.20",
+    "Unnamed: 2":1453075200000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- Sheet renamed => toSW_excITED_Regel_Set_x.xx => toSW_QAMRuleSet_x.xx\n- Date's for the different tools added\n- Ranking added\n- Reqest process added\n- Title of rule ID1.2.0 and ID3.1.0 modified"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.21",
+    "Unnamed: 2":1454457600000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"Planned date for RQ1 - QAM coupling corrected after feedback from Nagarajan Sakthi (DGS-EC\/QMM1)"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.22",
+    "Unnamed: 2":1458691200000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- Detailed references to ProcLib added\n- rule 3.9.0 renamed\n- time data faded out\n- rule 3.1.0 changed to rule 2.8.0\n- rule 3.1.0 new"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.23",
+    "Unnamed: 2":1458777600000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- Detailed references to ProcLib added\n- rule 3.9.0 renamed\n- time data faded out\n- role back of rule 3.1.0 changed to rule 2.8.0\n- role back rule 3.1.0 new\n- rule 3.10.0 new"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.24",
+    "Unnamed: 2":1471478400000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- Rule 3.6.0 splitted in 3.6.0 and 3.11.0 (3.6.0 for FC, 3.11.0 for BC Test Container Checks)\n- Rule 1.7.0 1.8.0 and 1.9.0 new for Planning (requested from Tanja Ollinger)\n- Rule 2.9.0 and 2.10.0 new for Progress (requested from Tanja Ollinger)"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.25",
+    "Unnamed: 2":1473811200000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- BER hint added\n- Formal addaptions"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.26",
+    "Unnamed: 2":1478476800000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"Date for Rule 3.11.0 adapted"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"1.27",
+    "Unnamed: 2":1487894400000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"Date for Rule 3.11.0 one more adapted"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"2.00",
+    "Unnamed: 2":1505088000000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"Rule set restructured"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"2.01",
+    "Unnamed: 2":1510876800000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"Additional rules from QMM regarding Aspice (PRAS …)"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"2.02",
+    "Unnamed: 2":1511827200000,
+    "Unnamed: 3":"Spitzer",
+    "Unnamed: 4":"Update of rules PRPS 02.03.00;  PRPS 03.05.00; PRPS 03.06.00 and PRPS 03.08.00"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"2.03",
+    "Unnamed: 2":1519776000000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"Formal adaptions"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"2.04",
+    "Unnamed: 2":1521072000000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"QAM Rule QADO 02.01.00 marked as active"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"2.4",
+    "Unnamed: 2":1521417600000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"Versionsanpassung für ILM"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"2.5",
+    "Unnamed: 2":1561680000000,
+    "Unnamed: 3":"Neumaier \/ Eberle",
+    "Unnamed: 4":"new rule QAWP 06.02.00"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"3.0",
+    "Unnamed: 2":1570665600000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- new version regarding use of Share Point\n- BBM metrics added\n- alignment with vCycle checks, comittment from Mo Yan (PS\/QMM2-EC) needed\n- write protection removed\n- adaption in timestamp of QAM rules"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"3.1",
+    "Unnamed: 2":1571270400000,
+    "Unnamed: 3":"Nagarajan\nEberle, Neumaier",
+    "Unnamed: 4":"- QAWP 07.01.00 new\n- Rule QAWP 07.00.01 adapted\n- allignment with pressen implementation"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"3.2",
+    "Unnamed: 2":1573603200000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- hidden entries in TAB \"IPT Rule Set (CUST) removed"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"3.3",
+    "Unnamed: 2":1593734400000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- links for new ProcLib (V5.7) adapted"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"3.4",
+    "Unnamed: 2":1599350400000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- statements for BBM metrics added (based on entries in info-tool)\n- mandatory \/ optional adjustment of the BBM metrics"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"3.5",
+    "Unnamed: 2":1604361600000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- BBM23 also optional for FND"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"3.6",
+    "Unnamed: 2":1627430400000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- formal adaptions\n- QADO 04.00.00 new"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"3.7",
+    "Unnamed: 2":1653955200000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- BBM8 and BBM9 also mandatory for FND\n- adaption of the links to Stages7\n- links for BBM metrics added"
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":"3.8",
+    "Unnamed: 2":1657065600000,
+    "Unnamed: 3":"Neumaier",
+    "Unnamed: 4":"- BBM23 officialy marked as mandatory for FND"
+  }
+]

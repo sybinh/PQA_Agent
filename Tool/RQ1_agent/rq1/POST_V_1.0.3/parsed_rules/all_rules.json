@@ -1,0 +1,8 @@
+{
+  "bbm_rules": [
+    {
+      "id": "BBM 01",
+      "name": "Ratio of technical customer requirements accepted",
+      "execution": "mandatory",
+      "check_retrospectively": "3m b / 8m f",
+      "implemented_in_api": 

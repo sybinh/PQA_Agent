@@ -1,0 +1,414 @@
+﻿QAM - Rule Set - Checked with QAM-i,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12,Unnamed: 13,Unnamed: 14
+,,,,,,,,,Rule-Version:,3.8,,,,
+,,,,,,,,,Rule-Date:,06.07.2022,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,Quality Assurance - Dokumentation,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,ID,Name,,,,,Execution in QAM,Check retrospectively up to,"implemented in QAM
+from","relevant for
+PQA",Links,Remarks
+,,,QADO 01.00.00,"FC in delivered state in SCM, but Issue-FD is not closed",,,,,new,,,yes,RQ1 Description,
+,,,,Cluster,Quality Assurance - Dokumentation,,,,,,,,,
+,,,,Where defined?,ProcLib - RQM,,,,,,,,RQ1 Description,
+,,,,Description,"Reladed issue in RQ1 closed?
+
+FC Lifecycle state = AVAILABLE || PROTOTYPE => Issue-FD != ""closed"" 
+
+For the above mentioned scenarios, the final FC status is set to ""ok"" (green) if 
+- Reladed issue in RQ1 = ""closed""
+
+Hint: The FC will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,,
+,,,,Statement,"Workproduct in SCM in delivered state, but related issue not closed",,,,,,,,,
+,,,,Hints,Check should take place earliest 7 days after setting the AVAILABLE state,,,,,,,,,
+,,,QADO 02.00.00,"FC in delivered state in SCM, check for requirement based development",,,,,new,,,yes,RQ1 Description,
+,,,,Cluster,Quality Assurance - Dokumentation,,,,,,,,RQ1 Description,
+,,,,Where defined?,ProcLib - RQM,,,,,,,,RQ1 Description,
+,,,,Description,"Reladed issue in RQ1 includes RBD tag?
+
+For QAM_FC:
+- FC Lifecycle state = AVAILABLE and Issue-FD = ""closed"" and RBD tag set
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE and Issue-FD = ""closed"" and RBD tag set
+
+For the above mentioned scenarios, the final FC/BC status is set to ""ok"" (green) if 
+- Reladed requirements review in DOORS is done
+
+Hint: The FC/BC will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,RQ1 Description,
+,,,,Statement,"Workproduct in SCM in delivered state, but requirement review in DOORS not done",,,,,,,,RQ1 Description,
+,,,,Hints,,,,,,,,,RQ1 Description,
+,,,QADO 02.01.00,"FC in delivered state in SCM, requirement based development needed, check for URT documentation",,,,,mandatory,last 12 month,2018-02-01 00:00:00,yes,RQ1 Description,Included in QAWP 06.00.00
+,,,,Cluster,Quality Assurance - Dokumentation,,,,,,,,,
+,,,,Where defined?,ProcLib - RQM,,,,,,,,RQ1 Description,
+,,,,Description,"Reladed issue in RQ1 includes RBD tag, URT done?
+
+For QAM_FC:
+- FC Lifecycle state = AVAILABLE and Issue-FD = ""closed"" and RBD tag set and Developpment Method in FC Release != CBD
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE and Issue-FD = ""closed"" and RBD tag set
+
+For the above mentioned scenarios, the final FC/BC status is set to ""ok"" (green) if 
+- URT documentation is available in SCM system
+- URT flag is set in SCM system
+
+Hint: The FC/BC will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,,
+,,,,Statement,"Workproduct in SCM in delivered state, RBD requested, but URT not done",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,QADO 03.00.00,Sorrounding of ECU generation - MISRA,,,,,new,,,yes,,
+,,,,Cluster,Quality Assurance - Dokumentation,,,,,,,,,
+,,,,Where defined?,ProcLib,,,,,,,,,
+,,,,Description,"Reladed issue in RQ1 includes MDG1 tag?
+
+For QAM_FC:
+- FC Lifecycle state = AVAILABLE and Issue-FD = ""closed"" and MDG1 tag set
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE and Issue-FD = ""closed"" and MDG1 tag set
+
+For the above mentioned scenarios, the final FC/BC status is set to ""ok"" (green) if 
+- MISRA2012 requirements are fulfild 
+
+Hint: The FC/BC will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,,
+,,,,Statement,"Workproduct was planned for MDG1, but MISRA2012 FULL check was not done",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,QADO 04.00.00,BMI evaluation and documentation,,,,,mandatory,last 12 month,2021-07-01 00:00:00,no,SW complexity,
+,,,,Cluster,Quality Assurance - Dokumentation,,,,,,,,,
+,,,,Where defined?,ProcLib - SW Maintenance,,,,,,,,,
+,,,,Description,"SW mantainace assessment done for relevant FC's?
+
+Hint: If the attribute ""SW Metrics Relevance"" in SDOM is set and the BMI of an FC is less than -50 and the attribute 
+      ""SW Metrics  Assessment"" is empty, then the FC will be marked as deviation (not_ok - red) in QA metric",,,,,,,,,
+,,,,Statement,SW Metrics Relevance is set and BMI is given as lower than -50 but assessment is not documented,,,,,,,,,
+,,,,Hints,"HIS Metric must be available and the attribute ""SW Metrics Relevance"" must be set before the SWA log file is created",,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,Cluster,,,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,,,,,,,,,,
+,,,,Statement,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,Cluster,,,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,,,,,,,,,,
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Statement,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,Quality Assurance - Work Product,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,ID,Name,,,,,Execution in QAM,Check retrospectively up to,"activated in
+QAM
+from","relevant for
+PQA",Links,Remarks
+,,,QAWP 01.00.00,Concept Review,,,,,mandatory,last 12 month,2016-01-01 00:00:00,no,Concept ,3.7.0
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - Process Concept Review,,,,,,,,Concept Review,
+,,,,Description,"Concept Review done?
+
+FC Lifecycle state = DEVELOPED || AVAILABLE
+For the above scenario, the final concept review status is set to ""ok"" (green) if
+- the concept review flag in SDOM = ""closed"", or
+- the concept review flag in SDOM = (""not necessary"" && comment != """")
+
+Hint: The FC will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,,
+,,,,Statement,Concept review not closed correctly,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,QAWP 02.00.00,Specification / Function Review,,,,,mandatory,last 12 month,2016-01-01 00:00:00,yes,Software Detailed Design,3.2.0
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - Component / Function Design => Function Specification,,,,,,,,Function Specification,
+,,,,Description,"Function Review done? - SPEC review must be done for all delivered FC's (and related classes)
+
+For QAM_FC:
+- FC Lifecycle state = DEVELOPED || AVAILABLE
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = DEVELOPED || AVAILABLE
+
+For the above mentioned scenarios, the final SPEC review status is set to ""ok"" (green) if 
+- SPEC review flag in SCM = ""closed"", and
+- review report (protocol) is available in review DB / tool, and
+- review is closed in review database with the decision ""Accept, No changes"" or ""Accept, after changes"", or
+- there is no spec, or
+- SPEC review flag in SCM = ""not necessary"" 
+
+Hint: The FC will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,Generic Review,
+,,,,Statement,Function review not closed correctly,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,QAWP 02.01.00,"Specification / Function Review ""not necessary""",,,,,outdated,,,no,Software Detailed Design,3.8.0
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - Component / Function Design => Function Specification,,,,,,,,Function Specification,
+,,,,Description,"SPEC review flag in SDOM set to ""not necessary"" - manual check by QC
+
+For QAM_FC:
+- FC Lifecycle state = DEVELOPED || AVAILABLE
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = DEVELOPED || AVAILABLE
+
+Hint: SPEC reviews must be done for all FC's (and related classes) except for FC's in state PROTOTYPE 
+      (review not needed for test software)
+
+QC has to check the following:
+- check the entered spec review comment. Valid reason for not performing the review must be entered.
+- check 4 eye principle. 
+- check whether the skipped reviews are not safety (relevant) functions etc.",,,,,,,,Generic Review,
+,,,,Statement,-,,,,,,,,,
+,,,,Hints,"no automatism - check must be done manually by QC / if the process will change and forbid this entry, check can be removed ",,,,,,,,,
+,,,QAWP 03.00.00,Software / Code Review,,,,,mandatory,last 12 month,2016-01-01 00:00:00,yes,Software Construction,3.3.0
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - Component / Function Design => Software Construction,,,,,,,,Software Construction,
+,,,,Description,"Software Review done? - Software review must be done for all delivered FC's (and related classes)
+
+For QAM_FC:
+- FC Lifecycle state = DEVELOPED || AVAILABLE
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = DEVELOPED || AVAILABLE
+
+For the above mentioned scenarios, the final Software review status is set to ""ok"" (green) if 
+- SW review flag in SCM = ""closed"" || SW StateD <> """", and
+- review report (protocol) is available in review database, and
+- review is closed in review database with the decision ""Accept, No changes"" or ""Accept, after changes"", or
+- SW review flag in SCM = ""closed"" || SW StateD = ""exempt""
+
+Hint: The FC will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,Generic Review,
+,,,,Statement,Software implementation / code review not closed correctly,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,QAWP 03.01.00,"SW Review ""exempt""",,,,,outdated,,,no,Software Construction,3.9.0
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - Component / Function Design => Software Construction,,,,,,,,Software Construction,
+,,,,Description,"Software review flag in SDOM set to ""closed"" || SW Review StateD = ""exempt"" - manual check by QC
+
+For QAM_FC:
+- FC Lifecycle state = DEVELOPED || AVAILABLE
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = DEVELOPED || AVAILABLE
+
+Hint: SW reviews must be done for all FC's (and related classes) except for FC's in state PROTOTYPE 
+      (review not needed for test software)
+
+QC to check the following:
+- check the entered code review comment. Valid reason for not performing the review must be entered.
+  Reasons might be:
+  1. Porting from clearcase or other CM system
+  2. no code changes",,,,,,,,Generic Review,
+,,,,Statement,-,,,,,,,,,
+,,,,Hints,"no automatism - check must be done manually by QC / if the process will change and forbid this entry, check can be removed ",,,,,,,,,
+,,,QAWP 04.00.00,Verification and Validation Condition in SCM,,,,,mandatory,last 12 month,2016-01-01 00:00:00,yes,SCM,3.5.0
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,"ProcLib - SCM Engineering => AA SCM Versioning and Status Assignment for Function Specifications and SW Sources (aaSW_CM_002)
+                                                 => MD SCM Quality Conditions (aaSW_CM_013) ",,,,,,,,"aaSW_CM_002
+Chapter 8",
+,,,,Description,"Validation and Verification Condition for a delivered FC (and related classes) set?
+
+For QAM_FC:
+- FC Lifecycle state = DEVELOPED => Verification Condition must be set
+- FC Lifecycle state = AVAILABLE => Verification and Validation Condition must be set
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = DEVELOPED => Verification Condition must be set
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = DEVELOPED || AVAILABLE => Verification and Validation Condition must be set
+
+Hint: Verification for FC in state DEVELOPED must be set
+Hint: Conditions need not be set for FC's in state PROTOTYPE 
+
+For the above mentioned scenarios, the final conditions status is set to ""ok"" (green) if 
+- Verification Condition <> """"
+- Validation Condition <> """"
+
+Hint: The FC will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,aaSW_CM_013,
+,,,,Statement,Verification and/or Validation Condition for work product not available,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,QAWP 05.00.00,LifeCycle in SCM,,,,,open,last 12 month,,yes,SCM,3.4.0
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - SCM Engineering => AA SCM Versioning and Status Assignment for Function Specifications and SW Sources (aaSW_CM_002),,,,,,,,"aaSW_CM_002
+Chapter 9",
+,,,,Description,"Lifecycle for delivered FC's (and related classes) set to AVAILABLE?
+
+Hint: If FC lifecycle state is not ""AVAILABLE"" but is integrated in a BC whose lifecycle state is ""DELIVERED""
+      then the FC will be marked as deviation (not_ok - red) in QA metric.",,,,,,,,,
+,,,,Statement,Life Cycle for integrated work product not correct,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,QAWP 06.00.00,Content of Test Container for Functions (FC or related classes) in SCM,,,,,mandatory,last 12 month,2015-10-01 00:00:00,yes,SW Unit Verification,3.6.0
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - Component / Function Design => SW Unit Verification ,,,,,,,,SW Unit Verification,
+,,,,Description,"Do the FC test container include the necessary artefacts?
+
+For QAM_FC:
+- FC Lifecycle state = AVAILABLE
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = AVAILABLE
+
+For the above mentioned scenarios, the final FC test container status is set to ""ok"" (green) if 
+- at least one related FC test container version must be checked in, and
+- all necessary artefacts available in the FC test container (test log, test spec and test report)
+
+Hint: If there is an artifact missing the FC test container status will be marked as not_ok (red) in QA metric.",,,,,,,,TC_FCI_Static_Checks,
+,,,,Statement,Artifacts of Test Container for Functions (FC or related classes) not complete (<missing test named>),,,,,,,,TC HowTo,
+,,,,Hints,Ignore FC TC content with CreationDate before 01.10.2015,,,,,,,,,
+,,,QAWP 06.01.00,Warning Assessment of Test Container for Functions (FC or related classes) in SCM ,,,,,mandatory,last 12 month,2017-10-01 00:00:00,yes,SW Unit Verification,3.6.0 -Included in QAWP 06.00.00
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,SW Unit Verification,
+,,,,Where defined?,ProcLib - Component / Function Design => SW Unit Verification ,,,,,,,,SW Unit Verification,
+,,,,Description,"Are the warning assessment for functions done in a proper way and fulfil the defined requirements?
+
+For QAM_FC:
+- FC Lifecycle state = AVAILABLE
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = AVAILABLE
+
+For the above mentioned scenarios, the final FC test container status is set to ""ok"" (green) if 
+- warning assessment is done in a proper way (test log file) 
+
+Hint: All reported / found warnings from various tools such as Cchecker, MISRA, compiler, DAMOS etc. must be assessed or removed.
+Hint: If there are deviations in the assessment the FC test container status will be marked as not_ok (red) in QA metric.",,,,,,,,SW Unit Verification,
+,,,,Statement,"Warning assessment for Functions (FC or related classes) not correcly done (e.g. MISRA, Compiler, Damos etc.) ",,,,,,,,SW Unit Verification,
+,,,,Hints,Ignore FC TC content with CreationDate before 01.10.2015,,,,,,,,SW Unit Verification,
+,,,QAWP 06.02.00,Review of Test Specification Artefacts for Functions (FC or related classes) in SCM ,,,,,mandatory,last 12 month,2019-08-01 00:00:00,yes,SW Unit Verification,Included in QAWP 06.00.00
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - Component / Function Design => SW Unit & Component Verification ,,,,,,,,Unit Reference Test ,
+,,,,Description,"Are the Test Specifications reviewed?
+
+For QAM_FC:
+- FC Lifecycle state = DEVELOPED or AVAILABLE
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = DEVELOPED or AVAILABLE
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = DEVELOPED or AVAILABLE
+
+For the above mentioned scenarios, the final status for the Test Specification Reviews is set to ""ok"" (green) if 
+- the FC creation date is befor January 1st 2019
+- the review attribut of all available artefacts are set to closed
+
+Hint: If there are open reviews found (content of attribute != closed) the status of the Test Specification Reviews will be marked as not_ok (red) in QA metric.",,,,,,,,Review the test specification for Requirement Test ,
+,,,,Statement,Test Specification not reviewed completely (<missing review named>),,,,,,,,,
+,,,,Hints,Ignore test specification artefacts if FC CreationDate is before 01.01.2019,,,,,,,,,
+,,,QAWP 07.00.01,Content of delivered Packages (BC or related classes) in SCM,,,,,open,last 12 month,,yes,Package Delivery,
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - SW Integration and SW Integration Test => Package (BC) Integration,,,,,,,,SW Integration and SW Integration Test,
+,,,,Description,"Do the content of delivered BC fulfil all necessary requirements (reviews done, conditions set, test container content ok)?
+
+For QAM_BC:
+- BC Lifecycle state = DEVELOPED || DELIVERED; FC Lifecycle state = DEVELOPED || AVAILABLE
+
+Hint: Rules QAWP 01.00.xx to QAWP 06.00.xx must be included in this rule for BC delivery
+Hint: The BC will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,Package Delivery,
+,,,,Statement,Content of delivered BC has deviations (at least one or more included FC's don't fullfill the Q measures),,,,,,,,,
+,,,,Hints,"Ignore FC TC content with CreationDate before 01.10.2015
+Ignore MISRA entries before 01.03.2017",,,,,,,,,
+,,,QAWP 07.01.00,Tag-List for developed Packages (BC or related classes) in SCM,,,,,open,last 12 month,,yes,Package Delivery,
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - Package (BC) delivery,,,,,,,,,
+,,,,Description,"Is the tag list for delivered BC linked to BC release?
+
+For QAM_BC:
+- BC Lifecycle state = DEVELOPED || DELIVERED
+
+Hint: The BC will be marked ""not ok"" (red) if link is missing.",,,,,,,,Package Delivery,
+,,,,Statement,Content of delivered BC has deviations (at least one or more included FC's don't fullfill the Q measures),,,,,,,,,
+,,,,Hints,"Ignore FC TC content with CreationDate before 01.10.2015
+Ignore MISRA entries before 01.03.2017",,,,,,,,,
+,,,QAWP 08.00.00,Content of Test Container for Packages (BC or related classes) in SCM,,,,,open,last 12 month,,yes,BC Integration Test,3.11.0
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - BC Implementation Test,,,,,,,,BC Integration Test,
+,,,,Description,"Do the BC test container include the necessary artefacts?
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = AVAILABLE
+
+For the above mentioned scenarios, the final BC test container status is set to ""ok"" (green) if 
+- at least one related BC test container version must be checked in, and
+- all necessary artefacts available in the BC test container (test log, test spec and test report)
+
+Hint: If there is an artifact missing the BC test container status will be marked as not_ok (red) in QA metric.",,,,,,,,,
+,,,,Statement,Artifacts of Test Container for Packages (BC or related classes) not complete ,,,,,,,,,
+,,,,Hints,"Ignore BC TC content with CreationDate before 01.01.2017
+Ignore MISRA entries before 01.03.2017",,,,,,,,,
+,,,QAWP 08.01.00,Warning Assessment of Test Container for Packages (BC or related classes) in SCM ,,,,,mandatory,last 12 month,2016-10-01 00:00:00,yes,BC Integration Test,3.11.0 - Included in QAWP 08.00.00
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,,
+,,,,Where defined?,ProcLib - BC Implementation Test,,,,,,,,BC Integration Test,
+,,,,Description,"Are the warning assessment for packages done in a proper way and fulfil the defined requirements?
+
+For QAM_BC:
+- BC Lifecycle state = DELIVERED; FC Lifecycle state = AVAILABLE
+- BC Lifecycle state = DEVELOPED; FC Lifecycle state = AVAILABLE
+
+For the above mentioned scenarios, the final BC Test Container status is set to ""ok"" (green) if 
+- warning assessment is done in a proper way (test log file) 
+
+Hint: All reported / found warnings from various tools such as Cchecker, MISRA, compiler, DAMOS etc. must be assessed or removed.
+Hint: If there are deviations in the assessment the BC test container status will be marked as not_ok (red) in QA metric.
+
+Do the content of the BC test container fulfil the defined requirements?
+
+- are the necessary artefacts available in the test container (test log, test spec and test report)
+- warning assessment done in a proper way (test log file) 
+
+Hint: All reported / found warnings from various tools such as Cchecker, MISRA, compiler, DAMOS etc. must be assessed or removed.
+Hint: If there are deviations the test container status will be marked as not_ok (red) in QA metric.",,,,,,,,,
+,,,,Statement,"Content of Test Container for Packages (BC or related classes) not correct (e.g. MISRA, Compiler, Damos etc.) ",,,,,,,,,
+,,,,Hints,"Ignore BC TC content with CreationDate before 01.01.2017
+Ignore MISRA entries before 01.03.2017",,,,,,,,,
+,,,QAWP 09.00.00,Content of delivered Programm Version (PVER or related classes) in SCM,,,,,open,,,yes,PVER Delivery,
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,PVER Delivery,
+,,,,Where defined?,ProcLib - SW Integration and SW Integration Test => Program Version (PVER) Integration & Delivery,,,,,,,,,
+,,,,Description,"Do the content of delivered PVER fulfil all necessary requirements
+(reviews done, conditions set, test container content ok)?
+
+For QAM_PVER:
+- BC Lifecycle state = DELIVERED
+
+Hint: Rules QAWP 07.00.xx to QAWP 086.00.xx must be included in this rule for PVER delivery
+Hint: The PVER will be marked ""ok"" (green) in the QA measurement if the above mentioned conditions are met.",,,,,,,,SW Integration and SW Integration Test,
+,,,,Statement,Content of delivered PVER has deviations (at least one or more included BC's don't fullfill the Q measures),,,,,,,,PVER Delivery,
+,,,,Hints,"Ignore BC TC content with CreationDate before 01.01.2017
+Ignore MISRA entries before 01.03.2017",,,,,,,,,
+,,,QAWP 10.00.00,Content of Test Container for Programm Version (PVER or related classes) in SCM,,,,,open,,,yes,PVER-I,
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,PVER-I,
+,,,,Where defined?,ProcLib - SW Integration and SW Integration Test => PVER Integration Test (PVER-I),,,,,,,,,
+,,,,Description,"Do the PVER test container include the necessary artefacts?
+
+For the above mentioned scenarios, the final PVER test container status is set to ""ok"" (green) if 
+- at least one related PVER test container version must be checked in, and
+- all necessary artefacts available in the PVER test container (test log, test spec and test report)
+
+Hint: If there is an artifact missing the BC test container status will be marked as not_ok (red) in QA metric.",,,,,,,,SW Integration and SW Integration Test,
+,,,,Statement,Artifacts of Test Container for PVER (or related classes) not complete ,,,,,,,,PVER-I,
+,,,,Hints,Ignore MISRA entries before 01.03.2017,,,,,,,,,
+,,,QAWP 10.01.00,Warning Assessment of Test Container for Programm Version (PVER or related classes) in SCM,,,,,open,,,yes,PVER-I,
+,,,,Cluster,Quality Assurance - Work Product,,,,,,,,PVER-I,
+,,,,Where defined?,ProcLib - SW Integration and SW Integration Test => PVER Integration Test (PVER-I),,,,,,,,,
+,,,,Description,"Are the warning assessment for PVER done in a proper way and fulfil the defined requirements?
+
+The final PVER Test Container status is set to ""ok"" (green) if 
+- warning assessment is done in a proper way (test log file) 
+
+Hint: All reported / found warnings from various tools such as Cchecker, MISRA, compiler, DAMOS etc. must be assessed or removed.
+Hint: If there are deviations in the assessment the PVER test container status will be marked as not_ok (red) in QA metric.",,,,,,,,SW Integration and SW Integration Test,
+,,,,Statement,"Content of Test Container for PVER (or related classes) not corect (e.g. MISRA, Compiler, Damos etc.) ",,,,,,,,PVER-I,
+,,,,Hints,Ignore MISRA entries before 01.03.2017,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,Cluster,,,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,,,,,,,,,,
+,,,,Statement,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,Cluster,,,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,,,,,,,,,,
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Statement,,,,,,,,,,
+,,,,Hints,,,,,,,,,,

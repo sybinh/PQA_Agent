@@ -1,0 +1,1165 @@
+﻿PMT - Rule Set - Checked with vCheck / PS-EC Info Tool,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12,Unnamed: 13,Unnamed: 14
+,,,,,,,,,Rule-Version:,3.8,,,,
+,,,,,,,,,Rule-Date:,06.07.2022,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,Project - Planing,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,ID,Name,,,,,"Execution in 
+vCheck",Check retrospectively up to,"implemented in 
+IP Tool
+from","relevant for 
+PQA","Links
+/ QAMi hints",Remarks
+,,,PRPL 01.00.00,"BC-R is not in requested state, 8 weeks before PVER planned delivery date ",,,,,optional,,2016-07-01 00:00:00,,impl. also in QAMi,1.1.0
+,,,,Cluster,Project - RQ1 Planing - DGS-EC/ECV specific tracking system (optional) ,,,,,,,,,
+,,,,Where defined?,Bosch Connect - Information about BC-Zuliefertracking Procedure,,,,,,,,DGS-EC/ECV BC-Zuliefertracking Procedure,"Hinweis nur in Connect und ECV spezifisch, damit ist Regel nicht Prozess konform"
+,,,,Description,"DGS-EC/ECV tracking system for BC-deliveries 8 Weeks before BC (PVER) delivery to the customer
+(approx 3 Weeks before BC-Delivery):
+DGS-EC/ECV requires a feedback from P-Res that the BC is accepted by setting BC to Requested 
+
+Considered Release LifeCycleState  = New",,,,,,,,,
+,,,,Pseudo Code,"1.1.0 - BC-R is not in requested state, 8 weeks before PVER planned delivery date: 
+// rule affects only new BCRs 
+if bcRelease.LIFE_CYCLE_STATE != NEW then 
+ return
+end if
+
+//firstPstPlannedDate - 8 weeks: less than 8 weeks until first PST planned date
+if firstPstPlannedDate-56 isInThePast then 
+ Warning ""BCR not requested 8 weeks before planned date. LifeCycleState"" + Lifecyclestate + ""less than 8 weeks before planned date ("" + firstPstPlannedDate-56 + "").""
+end if",,,,,,,,,
+,,,,Hints,"NO Time Restriction required
+
+======================================
+
+Hab die Planung im Griff - steht wo - unter Human Resources: Montor Task and Plan capacity for Group members
+Wir kontrolieren, ob irgedwann eine Anforderung angenommen wurde
+Es geht darum, den Auftrag auf Requested zu setzen - new darf nach Ablauf dieser Zeit nicht mehr im Auftrag (BC-R) stehen
+=> Wenn alle Kundenanforderungen (RRMs) Requested sind, dann muss innerhalb einer Woche die BC auch auf requestet gesetzt werden
+Aktuelles Mengengrüst ca. 500 Fälle seit 01.01.15
+
+=> Prüfung auf Status New für BC-R für 8 Wochen vor geplanter PVER Ablieferung
+=> das führt dazu, dass bei kurzfristigen Anforderungen und Überschneidung mit der Abfrage eine ggf. überflüssige eMail verschickt wird (Eskalationsstufe 1) in der zweiten Woche sollte dieser Fall nicht mehr auftauchen. Dieser Fall kann durch den QC in der ersten Woche auch unterbnden werden (Konfiguraton in excITED).
+
+=> Rule i.O.
+=> Decision NE-Q-Meeting: optional rule",,,,,,,,,
+,,,PRPL 02.00.00,"Workitem is in started state, but  planned date for workitem is not entered in planning tab ",,,,,outdated,,2019-09-01 00:00:00,,impl. also in QAMi,1.2.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,Requst One Online Help (& Resource planning),,,,,,,,Request One Online Help,Kein Hinweis in RQ1 Help für das Planned Date von Work Items
+,,,,Description,"The Workitem assignee started the work, but there is no Planned date entered.
+Planned date is the date when the WorkItem should be completed.
+
+Considered Workitem LifeCycleState  = Started",,,,,,,,,
+,,,,Pseudo Code,"1.2.0 - Workitem is in started state, but planned date for workitem is not entered in planning tab:
+// rule affects only started WIs
+if workItem != STARTED then  
+ return
+end if
+
+if plannedDate() = empty then
+ Warning ""Planned date for Workitem missing. LifeCycleState: "" + lifeCycleState
+end if",,,,,,,,,
+,,,,Hints,"NO Time Restriction required
+
+======================================
+
+Hab die Planung im Griff - steht wo - unter Human Resources: Montor Task and Plan capacity for Group members
+
+=> Rule i.O.",,,,,,,,,
+,,,PRPL 03.00.00,"Issue/Release/workitem is still in ""Conflicted"" state",,,,,optional,,2016-07-01 00:00:00,,impl. also in QAMi,1.3.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,"No Common DGS method defined to track conflicted elements. 
+LifeCycleState description: RQ1 Method Description 6. Life Cycle States and Transitions p.117 ",,,,,,,,RQ1 Description,
+,,,,Description,"A problem was indicated by somebody, the attribute “LifeCycleState Comment” holds the reason. The Issue/release/workitem must be clarified. 
+
+The tool will send automatic email if there is no due date or the date is overdue in the LifeCycleStateComment until when the issue will be kept in conflicted. Date format: DD.MM.YYYY
+
+Considered Elements LifeCycleState = Conflicted, ",,,,,,,,"Chapter 
+6.1.
+",
+,,,,Pseudo Code,"1.3.0 - Issue/release/workitem is still in ""Conflicted"" state:
+// rule affects only conflicted I-SWs
+if issueSW/issueFD/BCrelease/FCrelease/workitem.LIFE_CYCLE_STATE != CONFLICTED then
+    return
+end if
+
+// retrieve last due date from life cycle state comment field
+if issueSW/issueFD/BCrelease/FCrelease/workitem.lastDueDate = null then
+    Warning ""No due date found in life cycle state comment field. LifeCycleState "" + issueSW/issueFD/BCrelease/FCrelease/workitem.LIFE_CYCLE_STATE + "" I-SW/I-FD/BC-R/FC-R/WI does not contain a due date in life cycle state comment field.""   
+    return
+end if
+  
+if issueSW/issueFD/BCrelease/FCrelease/workitem.lastDueDate = isInThePast then
+    Warning ""Due date found in life cycle state comment field is in the past. LifeCycleState "" + issueSW/issueFD/BCrelease/FCrelease/workitem.LIFE_CYCLE_STATE + "" I-SW/I-FD/BC-R/FC-R/WI due date in life cycle state comment field is in the past.""
+end if",,,,,,,,,
+,,,,Hints,"All elements shall be evaluated and set to acutal state (Initial Effort)
+
+Entweder muss Conflicted nach 2 Wochen aufgelöst, oder im Komentar wird begründet warum Auftrag aktuell nicht bearbeitet werden kann
+Datum wird überprüft, liegt Datum in der Zukunft dann ok, liegt er in der Vergangenheit, dann wird Auftrag auffällig
+=> WI für z.B. Fahzewugtests an CE adressieren (unterhalb des IFD)) damit Verantwortung im CE
+
+=> hier sollte eine Möglichkeit der Zuordnung geschaffen werden - wer hat gerade den ""Ball"" - Lösung sollte in RQ1 erfolgen - nicht über Einträge in Freitexfeldern!!!
+Beschreibung für die Pflege des Datumsfeldes erfolgt durch T. Mandel  (Absprache mit T. Ollinger)",,,,,,,,,
+,,,PRPL 04.00.00,Effort estimation (planned),,,,,,,open,,impl. also in QAMi,1.4.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,,,,,,,,,RQ1 Description,
+,,,,Description,"Effort Estimation
+Estimated Effort [ph]
+Aggregated Estimated Effort [ph]
+Account Numbers
+Attachments -> Estimation Sheet available and includes the same Estimated Effort",,,,,,,,"Chapter 
+3.7.11
+4.1.2
+",
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,tbd,,,,,,,,,
+,,,PRPL 05.00.00,Planning of Quality Measures (planned),,,,,,,open,,impl. also in QAMi,1.5.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,"Requirements Review                                   Done || Required || Not Required || Not Done 
+DRFBM                                                 Done || Required || Not Required || Not Done
+FMEA                                                  Done || Required || Not Required || Not Done
+Specification Review (with Customer)                  Done || Required || Not Required || Not Done",,,,,,,,,
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 06.00.00,Not all fields for defect detection/injection attributes in a Bug Fix Issue (IFD) are filled,,,,,optional,,2019-09-01 00:00:00,,,3.1.0 - only for Bugs!
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,RQ1 Method Description 4.3. Defect Handling p.51,,,,,,,,RQ1 Description,
+,,,,Description,"Issue FD (only for BugFix Issues: 
+- Defect detection attributes of Defect Flow model
+  (Defect Detection Location, Defect Detection Process, Defect Detection Organisation, Defect Detection Date), 
+- During defect resolution (issue implementation): all defect correction attributes
+  (Defective Work Product Type, Defect Classification, Defect Injection Organisation, Defect Injection Date). 
+
+Considered Issues: Category Defect, 
+Defect detection attributes,Occurrence, Severity:
+Issues LifeCycleState:                              Evaluated, Committed, Implemented, !=Canceled, != Conflicted
+Defect correction attributes Issues LifeCycleState: Evaluated, Committed, Implemented, !=Canceled, != Conflicted",,,,,,,,Chapter 4.3 Defect Handling,
+,,,,Pseudo Code,"3.1.0_I_SW - Not all fields for defect detection/injection attributes in a Bug Fix Issue (ISW) are filled:
+// rule is NOT for canceled or conflicted ISWs
+if issueSW = canceledOrConflicted then
+    return
+end if
+
+// rule affects only ISWs with category ""Defect""
+if issueSW.CATEGORY != DEFECT then
+    return
+end if
+
+// check if ANY of the defect detection attributes is empty
+if issueSW.DEFECT_DETECTION_LOCATION = null || issueSW.DEFECT_DETECTION_PROCESS = null || issueSW.DEFECT_DETECTION_ORGANISATION = null || issueSW.DEFECT_DETECTION_DATE = null then
+    Warning ""Defect detection attributes are not completely filled out. LifeCycleState "" + issueSW.LIFE_CYCLE_STATE + ""At least one of the following fields is empty:"" + ""Defect Detection Location, Defect Detection Process, Defect Detection Organisation, Defect Detection Date""
+end if
+
+// check if occurrence or severity is empty
+if issueSW.OCCURRENCE = null || issueSW.SEVERITY = null then
+ Warning ""Occurrence or Severity are not completely filled out. LifeCycleState "" + issueSW.LIFE_CYCLE_STATE.getValueAsText() + ""At least one of the following fields is empty:"" + ""Occurrence, Severity""
+end if
+
+if issueSW.LIFE_CYCLE_STATE != NEW then 
+// check of defect correction attributes is omitted, if defective work product type is ""Supplied Work Product""
+    if issueSW.DEFECT_WORKPRODUCT_TYPE != SUPPLIED_WORK_PRODUCT then
+        // check if ANY of the defect correction attributes is empty
+        if issueSW.DEFECT_WORKPRODUCT_TYPE = null  || issueSW.DEFECT_CLASSIFICATION.getValue() = null || issueSW.DEFECT_INJECTION_ORGANISATION.getValue() = null || issueSW.DEFECT_INJECTION_DATE.getValue() = null then
+   Warning ""Defect correction attributes are not completely filled out. LifeCycleState "" + issueSW.LIFE_CYCLE_STATE + ""Defective Work Product Type "" + issueSW.DEFECT_WORKPRODUCT_TYPE + ""At least one of the following fields is empty:""+ ""Defective Work Product Type, Defect Classification, Defect Injection Organisation, Defect Injection Date""
+        end if
+ end if
+end if
+
+
+3.1.0_I_FD - Not all fields for defect detection/injection attributes in a Bug Fix Issue (IFD) are filled:
+// rule is NOT for canceled or conflicted IFDs
+if issueFD = canceledOrConflicted then
+    return
+end if
+
+// rule affects only IFDs with category ""Defect""
+if issueFD.CATEGORY != DEFECT then
+    return
+end if
+
+// check if ANY of the defect detection attributes is empty
+if issueFD.DEFECT_DETECTION_LOCATION = null || issueFD.DEFECT_DETECTION_PROCESS = null || issueFD.DEFECT_DETECTION_ORGANISATION = null || issueFD.DEFECT_DETECTION_DATE = null then
+ Warning ""Defect detection attributes are not completely filled out. LifeCycleState "" + issueFD.LIFE_CYCLE_STATE + ""At least one of the following fields is empty:"" + ""Defect Detection Location, Defect Detection Process, Defect Detection Organisation, Defect Detection Date""
+end if
+
+// check of defect correction attributes is omitted for new IFDs
+if issueFD.LIFE_CYCLE_STATE != LifeCycleState_Issue.NEW then
+ // check if ANY of the defect correction attributes is empty
+    if issueFD.DEFECT_WORKPRODUCT_TYPE = null || issueFD.DEFECT_CLASSIFICATION = null || issueFD.DEFECT_INJECTION_ORGANISATION = null || issueFD.DEFECT_INJECTION_DATE = null then
+  Warning ""Defect correction attributes are not completely filled out. LifeCycleState "" + issueFD.LIFE_CYCLE_STATE + ""At least one of the following fields is empty:"" + ""Defective Work Product Type, Defect Classification, Defect Injection Organisation, Defect Injection Date""
+ end if
+end if
+
+
+",,,,,,,,,
+,,,,Hints,"Ignore I-SW/I-FD CreationDate before 01.01.2015
+23.03.16:
+was Rule 3.1.0 - iIs progress, allocation to product was wrong
+Rule was not implemented yet, therefore it could be renumbered
+==============================
+
+=> sollte in RQ1 in der Abfolge der Statusübergänge erfolgen - Prüfung mit T. Mandl diskutieren, Umsetzung im Tool notwencig, damit könnte Regel entfallen
+=> Regel wird in RQ1 schon bei Abschluss des Auftrages überprüft, fraglich, ob weitere Überprüfung in Bezug auf Zwischen-Steps notwendig ist",,,,,,,,,
+,,,PRPL 07.00.00,Planned date of BC later than requested delivery date of any mapped PVER or PVAR,,,,,optional,,2016-06-24 00:00:00,,impl. also in QAMi,1.6.0
+,,,,Cluster,Project - RQ1 Planing (optional),,,,,,,,,
+,,,,Where defined?,"4.1.2.1. Order Evaluation(s) from Function Development (Issue FDs) p.38
+4.2.2.Receive Order for Evaluation from Customer Project or Requester p.43
+7.1.1.Milestones",,,,,,,,RQ1 Description,
+,,,,Description,"The BC Release will be a remarked if the planned date of BC later than requested delivery date of any mapped PVER or PVAR
+Consideredthe BC Releases LifeCycleState  <= Implemented  & != Closed, != Canceled, !=Conflicted
+Not expiciltly defined that Planned date should be earler then the requieseted delivery date.",,,,,,,,"4.1.2.1.
+4.2.2.
+7.1.1.",
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 08.00.00,BC without mapping to PVER or PFAM,,,,,optional,,2019-09-01 00:00:00,,,1.7.0
+,,,,Cluster,Project - RQ1 Planing (optional),,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,"Checks that BC is mapped to a PVER or PFAM.
+The warning 'BC not linked to any PVER/PFAM.' is set on the BC, if no mapping exists.
+
+Note:
+This check is only performed for BCs in life cycle state 'Requested' and 'Planned'.",,,,,,,,,
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 09.00.00,FC in time for BC,,,,,optional,,2019-09-01 00:00:00,,,1.8.0
+,,,,Cluster,Project - RQ1 Planing (optional),,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,"Checks that a FC comes in time for a BC.
+
+The following warnings are set on the RRM:
+a) 'No planned date set for FC.'
+b) 'No planned date set for BC.'
+c) 'FC planned date too late for BC requested delivery date.'
+d) 'FC planned date too late for BC planned date.'
+
+About d: Check is only done, if requested delivery date is not set in RRM.
+
+This rule is only applied if the LifeCycleStates of the RRM is REQUESTED or PLANNED.",,,,,,,,,
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 10.00.00,"Check dates for PVER, BC and FC",,,,,optional,,2019-09-01 00:00:00,,,1.9.0
+,,,,Cluster,Project - RQ1 Planing (optional),,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,"The dates for PVER, BC and FC are checked against the following rules:
+
+For life cycle state REQUESTED:
+- If a Planning Freeze is set, then it has to be in the future or today.
+- If a Implementation Freeze is set, then it has to be in the future or today.
+- Planned Date must be set and in the future or today.
+
+For life cycle state PLANNED:
+- If a Implementation Freeze is set, then it has to be in the future or today.
+- Planned Date must be set and in the future or today.
+
+For life cycle state DEVELOPED:
+- Planned Date must be set and in the future or today.
+
+For life cycle states NEW, CLOSED, CANCELLED and CONFLICTED:
+- No dates are checked.",,,,,,,,,
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 11.00.00,IFD 5 day SLA reached,,,,,optional,,2016-03-01 00:00:00,,impl. also in QAMi,2.1.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,RQ1 Method Description: 4.1.2.1. Order Evaluation(s) from Function Development (Issue FDs) p.39 (at the moment used in rare cases),,,,,,,,RQ1 Description,
+,,,,Description,"Typically the evaluation results shall be provided by Function Development within 5 work days. 
+In such case, the explicit provision of an evaluation deadline can be skipped. An evaluation deadline can be defined as 
+
+<EvaluationRequiredBy>DD.MM.YYYY<\EvaluationRequiredBy> The evaluation date has to be defined by the requestor.
+
+Estimate the effort for the Issue FD and set to Evaluated within 5 days after forwarded to Funtion Development or till the evaluation deadline defined
+
+Considered issue FD LifeCycleState  = New ",,,,,,,,"ProcLib:
+Receive the Issue FD from the customer/requestor","Kann nicht geprüft werden, da die Forderung in der ProcLib ""sollte"" lautet, damit ist diese Vorgehensweise nicht verbindlich. "
+,,,,Pseudo Code,"2.1.0 - IFD 5 day SLA reached:
+if issueFD.LIFE_CYCLE_STATE != NEW then
+ return
+end if
+
+// if evaluation date is provided
+if evaluationDate != null && evaluationDate != empty then 
+ if evaluationDate = isInThePast then
+  Warning ""Not evaluated after evaluation date. LifeCycleState "" + issueFD.LIFE_CYCLE_STATE + "" after evaluation date ("" + evaluationDate + "").""
+    end if
+else
+ // if forward date is available
+ if forwardDate != null then
+  if forwardDate+7 = inThePast then  //(Date + 7 days) in the past - or 5 working days
+            Warning ""Not evaluated after forward date plus 5 working business days. LifeCycleState "" + issueFD.LIFE_CYCLE_STATE + "" after forward date plus 5 working business days ("" + forwardDate+7 + "").""
+        end if    
+ // if forward date is NOT available
+ else  
+        if submitDate+7 = inThePast then
+            Warning ""Not evaluated after submit date plus 5 working business days. LifeCycleState "" + issueFD.LIFE_CYCLE_STATE + "" after submit date plus 5 working business days ("" + submitDate+7 + "").""
+        end if
+ end if
+end if
+",,,,,,,,,
+,,,,Hints,NO Time Restriction required,,,,,,,,,
+,,,PRPL 12.00.00,"IFD is not closed, even though all the BC-Rs mapped to it are closed or cancelled ",,,,,optional,,2016-03-01 00:00:00,,impl. also in QAMi,2.2.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,"Target level for checking: 
+RQ1 Method Description: 4.2.6.Close an Issue FD p.49
+Pilot implementation of Issue FD finished (incl. required tests and qualification measures) – Prohibit user modification",,,,,,,,RQ1 Description,
+,,,,Description,"The issues will be a remarked issue if alll the BC Releases are closed, or cancelled, however the issue FD is not closed.
+
+Considered issue FD LifeCycleState  <= Implemented  & != Closed, != Canceled, !=Conflicted",,,,,,,,,
+,,,,Pseudo Code,"2.2.0 - IFD is not closed, even though all the BC-Rs mapped to it are closed or cancelled:
+if issueFD isCanceledOrConflicted then
+    return
+end if
+
+// rule affects IFDs with life cycle state before ""CLOSED""
+if issueFD.LIFE_CYCLE_STATE = CLOSED then
+ return
+end if
+
+for IFDs and all to them mapped IRMs
+    if irm != QUALIFIED && irm != CANCELED then
+        return
+ end if
+end for
+
+if bcs = EMPTY
+    return
+end if
+
+for IFDs and all to them mapped BCs
+    if BCs != CLOSED && BCs != CANCELED then
+        return
+ end if
+end for
+
+Warning ""Not closed, even though all conditions are met. LifeCycleState "" + issueFD.LIFE_CYCLE_STATE + "", even though all IRMs are qualified / canceled and all BCRs are closed / canceled.""",,,,,,,,,
+,,,,Hints,"All Issues shall be evaluated and set to actual state (Initial Effort)
+=> Rule i.O.
+=> 23.03.2016 - Rule i.O.",,,,,,,,,
+,,,PRPL 13.00.00,"IFD is not implemented or closed, after planned dated of BC-R",,,,,mandatory,,2016-07-01 00:00:00,,impl. also in QAMi,2.3.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,"Target level for checking: 
+RQ1 Method Description 4.2.5.Implement an Issue FD p.48
+The Issue FD is implemented once all related components for a pilot implementation are developed and qualified
+(e.g. two different package alternatives requested with same Issue FD, Issue FD is evaluated when implemented in at least one BC alternative)
+(Issue Impleneted mit Implemetation Freeze)",,,,,,,,RQ1 Description,
+,,,,Description,"The tool will take planned date of mapped BC releases,  which are in “Planned” or “Developed”, to verify check. The issue will be remarked if the issue FD is not in Implemented Phase, but the first BC - Release has already closed.
+
+Considered issue FD LifeCycleState  <= Implemented  & != Closed, != Canceled, !=Conflicted",,,,,,,,,
+,,,,Pseudo Code,"2.3.0 - IFD is not implemented or closed, after planned dated of BC-R:
+// rule is NOT for canceled or conflicted IFDs
+if issueFD = canceledOrConflicted then
+    return
+end if
+
+// rule affects only IFDs with life cycle state ""COMITTED""
+if issueFD.LIFE_CYCLE_STATE != COMMITTED then
+    return
+end if
+
+if firstPlannedDate = null then
+    return
+end if
+
+// threshold for implementation is first planned date
+if firstPlannedDate = inThePast then
+    Warning ""Not implemented after first planned date. LifeCycleState"" + issueFD.LIFE_CYCLE_STATE + "" after first planned date ("" + firstPlannedDate.toString() + "").""
+end if",,,,,,,,,
+,,,,Hints,"NO TIgnore planned date of BC release before 01.01.2015
+=> Rule i.O.
+=> 23.03.2016 - Rule i.O.ime Restriction required",,,,,,,,,
+,,,PRPL 14.00.00,"IFD is not committed, eventhough attached Issue-SW is committed",,,,,mandatory,,2016-07-01 00:00:00,,impl. also in QAMi,2.4.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,"RQ1 Method Description 4.2.4.Decide on Issue FD Implementation in Function Development p.47
+Decide on Issue FD Implementation in Function Development",,,,,,,,RQ1 Description,
+,,,,Description,"The Issue should have the LifeCycleState Committed, because the I-SW of this Issue has already the Committed state
+
+Considered issue FD LifeCycleState  <= Evaluated  & != Closed, != Canceled, !=Conflicted",,,,,,,,Chapter 4.2.4 Decide on IFD,
+,,,,Pseudo Code,"2.4.0 - IFD is not committed, eventhough attached Issue-SW is committed:
+// rule is NOT for canceled or conflicted IFDs
+if issueFD = canceledOrConflicted then
+    return
+end if
+
+// rule affects IFDs with life cycle state before ""COMMITTED"", ""IMPLEMENTED"" and ""CLOSED""
+if IFD = COMMITTED || IFD = IMPLEMENTED || IFD = CLOSED then
+    return
+end if
+
+if issueFD.PARENT instanceof issueSW && parent.LIFE_CYCLE_STATE = COMMITTED then
+ Warning ""Not committed, even though ISW is committed. LifeCycleState"" + issueFD.LIFE_CYCLE_STATE + "", even though ISW is committed.""
+end if
+
+
+2.5.0_BC_R - Release is not closed after planned date for BC:
+// rule is NOT for canceled or conflicted BCRs
+if bcRelease = canceledOrConflicted then
+    return
+end if
+
+// threshold for closure of planned or developed BCRs is planned date
+if bcRelease.PLANNED_DATE = isInThePast && (bcRelease.LIFE_CYCLE_STATE = PLANNED || bcRelease.LIFE_CYCLE_STATE = LDEVELOPED) then
+    Warning ""BCR not closed after planned date. LifeCycleState "" + bcRelease.LIFE_CYCLE_STATE + "" after planned date ("" + bcRelease.PLANNED_DATE.getValueAsText() + "").""
+end if
+",,,,,,,,,
+,,,,Hints,"NO Time Restriction required
+=> Rule i.O.
+=> 23.03.2016 - Rule i.O.",,,,,,,,,
+,,,PRPL 15.00.00,Release is not closed after planned date for BC and FC,,,,,mandatory,,2016-07-01 00:00:00,,impl. also in QAMi,2.5.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,RQ1 Method Description 3.5. Scheduling information in Request One p.17,,,,,,,,RQ1 Description,
+,,,,Description,"The BC / FC should have the LifeCycleState Closed until BC / FC Planned Delivery Date.
+Qualification measures must be fully completed and documented for the release. Component is available in SDOM in State “LIMITED”, “AVAILABLE”, “DELIVERED-RESTRICTED”, “DELIVERED-UNRESTRICTED” or “PROTOTYPE” Release is prohibited from user modifications.
+
+Considered Releases LifeCycleState: Planned, Developed, !=Canceled, !=Conflicted, !=Closed; ",,,,,,,,Chapter 3.5 Scheduling,
+,,,,Pseudo Code,"2.5.0_BC_R - Release is not closed after planned date for BC:
+// rule is NOT for canceled or conflicted BCRs
+if bcRelease = canceledOrConflicted then
+    return
+end if
+
+// threshold for closure of planned or developed BCRs is planned date
+if bcRelease.PLANNED_DATE = isInThePast && (bcRelease.LIFE_CYCLE_STATE = PLANNED || bcRelease.LIFE_CYCLE_STATE = LDEVELOPED) then
+    Warning ""BCR not closed after planned date. LifeCycleState "" + bcRelease.LIFE_CYCLE_STATE + "" after planned date ("" + bcRelease.PLANNED_DATE.getValueAsText() + "").""
+end if
+
+2.5.0_FC_R - Release is not closed after planned date for FC:
+// rule is NOT for canceled or conflicted IFDs
+if issueFD = canceledOrConflicted then
+    return
+end if
+
+// rule affects IFDs with life cycle state before ""CLOSED""
+if issueFD.LIFE_CYCLE_STATE = CLOSED then
+    return
+end if
+
+// rule affects IFDs for which all IRMs are qualified or canceled
+for IFDs and all to them mapped IRMs
+    if irm.LIFE_CYCLE_STATE != QUALIFIED && irm.LIFE_CYCLE_STATE != CANCELED then
+        return
+    end if
+end for
+
+if BCs = EMPTY then
+    return
+end if
+
+// rule affects IFDs for which all BCRs are closed or canceled
+for IFDs and all to them mapped BCs
+    if BC.LIFE_CYCLE_STATE != CLOSED && BC.LIFE_CYCLE_STATE != CANCELED then
+        return
+    end if
+end for
+
+Warning ""Not closed, even though all conditions are met. LifeCycleState "" + issueFD.LIFE_CYCLE_STATE + "", even though all IRMs are qualified / canceled and all BCRs are closed / canceled.""",,,,,,,,,
+,,,,Hints,"All releases shall be evaluated and set to actual state (Initial Effort)
+=> Rule i.O.",,,,,,,,,
+,,,PRPL 16.00.00,Workitem is not closed after planned date,,,,,mandatory,,2016-07-01 00:00:00,,impl. also in QAMi,2.6.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,RQ1 Method Description 4.16. Handling of Projects; 6.1.6.1. Workitem - Life Cycle State Definitions (& Resource planning)  ,,,,,,,,RQ1 Description,
+,,,,Description,"When the work is done, the assignee sets the Workitem in the CLOSED state. This state is a final state. Planned date is the date when the WorkItem should be completed.
+
+Considered Workitem LifeCycleState: All  & =Canceled, !=Conflicted, !=Closed",,,,,,,,Chapter 6.1.6 Workitem,In ProcLib keine Hinweise auf Abhängigkeiten zwischen Workitem und Planned Date
+,,,,Pseudo Code,"2.6.0 - Workitem is not closed after planned date:
+// rule is NOT for canceled or conflicted WIs and rule affects only new and started WIs
+if workItem.LIFE_CYCLE_STATE != STARTED && workItem.LIFE_CYCLE_STATE != NEW then
+    return
+end if
+  
+if workItem.PlannedDate = inThePast then
+    Warning ""Planned date in the past but Workitem not yet closed. PlannedDate: "" + workItem.PlannedDate + ""LifeCycleState: "" + workItem.LifeCycleState
+end if",,,,,,,,,
+,,,,Hints,"All workitems shall be evaluated and set to acutal state (Initial Effort)
+=> Rule i.O.",,,,,,,,,
+,,,PRPL 17.00.00,Status Canceled (planned),,,,,outdated,,open,,,2.7.0
+,,,,Cluster,Project - RQ1 Planing,,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,Status Canceled (planned),,,,,,,,,
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 18.00.00,I-FD not committed 5 or more working days after attached I-SW was committed,,,,,,,2019-09-01 00:00:00,,impl. also in QAMi,2.8.0
+,,,,Cluster,Project - RQ1 Planing (optional),,,,,,,,,
+,,,,Where defined?,"RQ1 Method Description 4.2.4.Decide on Issue FD Implementation in Function Development p.47
+Decide on Issue FD Implementation in Function Development",,,,,,,,RQ1 Beschreibung,
+,,,,Description,"The Issue should have the LifeCycleState Committed, because the I-SW of this Issue has already the Committed state 5 or more working days earlier
+
+Considered issue FD LifeCycleState  <= Evaluated  & != Closed, != Canceled, !=Conflicted",,,,,,,,Chapter 4.2.4 Decide on IFD,ggf. Anpassung in RQ1 - automatische Anpassung des IFD nachdem ISW auf commited gesetzt wird.
+,,,,Pseudo Code,"2.8.0 - IFD is not committed, eventhough attached Issue-SW is committed:
+// rule is NOT for canceled or conflicted IFDs
+if issueFD = canceledOrConflicted then
+    return
+end if
+
+// rule affects IFDs with life cycle state before ""COMMITTED"", ""IMPLEMENTED"" and ""CLOSED""
+if IFD = COMMITTED || IFD = IMPLEMENTED || IFD = CLOSED then
+    return
+end if
+
+if issueFD.PARENT instanceof issueSW && parent.LIFE_CYCLE_STATE = COMMITTED 5 or more working days earler  then
+ Warning ""Not committed, even though ISW is committed. LifeCycleState"" + issueFD.LIFE_CYCLE_STATE + "", even though ISW is committed.""
+end if
+
+",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 19.00.00,Name Check Function (FC),,,,,optional,,open,,planed for QAMi,2.9.0
+,,,,Cluster,Project - RQ1 Planing - Element Integrity (optional),,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,"For all Lifecyle state values != INBERAB
+
+The title of a FC has to fit to one of the following formats:
+
+a) FC     : <FunctionName> / <VersionNumber>
+b) FCC    : <FunctionName> / <VersionNumber>
+c) FCL    : <FunctionName> / <VersionNumber>
+d) FCP    : <FunctionName> / <VersionNumber>
+e) FC-ARA : <FunctionName> / <VersionNumber>
+f) FC-ARB : <FunctionName> / <VersionNumber>
+g) FX     : <FunctionName> / <VersionNumber>
+
+<FunctionName> ... has to start with a character and may continue with characters and digits and underlines.
+
+<VersionNumber> ... is a series of numbers, characters and underlines seperated by dots.
+The FC is marked with the warning 'Invalid Title', if the name does not met this format.",,,,,,,,,ggf. Anpassung in RQ1 - Namenskonvention kann direkt im Tool überprüft werden
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 20.00.00,Name Check Package (BC),,,,,optional,,open,,planed for QAMi,2.10.0
+,,,,Cluster,Project - RQ1 Planing - Element Integrity (optional),,,,,,,,,
+,,,,Where defined?,,,,,,,,,,
+,,,,Description,"For all Lifecyle state values != INBERAB
+
+The title of a BC has to fit to one of the following formats:
+
+a) BC    : <PackageName> / <VersionNumber>
+b) BC_MO : <PackageName> / <VersionNumber>
+c) BCC   : <PackageName> / <VersionNumber>
+d) BX    : <PackageName> / <VersionNumber>
+e) CEL   : <PackageName> / <VersionNumber>
+f) CC    : <PackageName> / <VersionNumber>
+
+<PackageName> ... Only characters allowed.
+
+<VersionNumber> ... has to start with number continued by series of numbers, characters and underlines seperated by dots.
+
+The BC is marked with the warning 'Invalid Title', if the name does not fit to this format",,,,,,,,,ggf. Anpassung in RQ1 - Namenskonvention kann direkt im Tool überprüft werden
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 21.00.00,"ISW is not closed or imeplemented, even though function developement is finished and at least one or all IRM(s) are qualified",,,,,optional,,2019-09-01 00:00:00,,,
+,,,,Cluster,Project - RQ1 Planing - Element Integrity (optional),,,,,,,,,
+,,,,Where defined?,"RQ1 Method Description 
+4.1.5.Close an Issue SW p41. ",,,,,,,,RQ1 MD Link,
+,,,,Description,"Change requests shall be tracked until closure. 
+The issues shall be a remarked issue if the function development is finished and at least one/all IRM(s) are qualified, however the issue SW is not impleneted or closed.
+
+The Issue SW responsible shall set the Issue SW Lifecycle State to Closed or implemented.",,,,,,,,,
+,,,,Pseudo Code,"Function Development Done      [All related Issue FDs are at minimum “Implemented” (or already “Closed)]
+All PVER-F Done                                [All IRMs of Issue SW are set to “Qualified”]
+
+- Function Development Done  &&  [All related Issue FDs are at closed]
+- One PVER-F Done &&    [Minimum one IRM of Issue SW is set to “Qualified”]
+",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPL 22.00.00,PVER-F testing is open even though IRM is impleneted,,,,,optional,,2019-09-01 00:00:00,,,
+,,,,Cluster,Project - RQ1 Planing - Element Integrity - SystemTest (CbD) ,,,,,,,,,
+,,,,Where defined?,Process: PVER Functional Test (PVER-F) ,,,,,,,,P-Lib Link,
+,,,,Description,"The issue release map (Issue SW - PVER) shall be remarked if the PVER-F testing is open however the BC have been already implemented in the PVER. 
+
+PVER-F verifies the correct implementation of the Issue SW in the PVER is delivered to the customer",,,,,,,,,
+,,,,Pseudo Code,"IRM (Issue SW - PVER)Implemented after plus 10 working business days  or PVER Planned Date is already in the past. 
+
+QualificationStatus of the IRM with Failed or Not Required shall be ignored. ",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,Project - Progress,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,ID,Name,,,,,"Execution in 
+IP Tool",Check retrospectively up to,"implemented in 
+IP Tool
+from","relevant for 
+PQA",Links,Remarks
+,,,PRPS 01.00.00,Tracking of Change Requests,,,,,optional,,open,,,SUP.10
+,,,,Cluster,Project - ASpice (optional) - Change Request Management (SUP.10),,,,,,,,,
+,,,,Where defined?,PLIB,,,,,,,,,
+,,,,Description,Ensure change request are closed ,,,,,,,,,
+,,,,Pseudo Code,"open IRMs, work items, PVERs?
+
+RQ1 PVER releases not Closed includes check of Workitems, IRMs
+
+Read RQONE PVER Q report using release ID
+
+-----x-------
+RQ1 PVER lifecycle state
+input fields = RQ1 PVER releases and RQ1 project id
+
+If Current date > planned date and PVER release id status != CLOSED,
+them warning!
+//rule affects RQ1 PVER releases
+if RQ1 PVER release != CLOSED then
+Warning ""RQ1 PVER releases.LifecycleState: "" + to be Closed
+ end if
+
+IRMs in Qualified state
+//rule affects IRM lifecycle state
+
+if IRM lifecycle state == QUALIFIED
+flag = 1
+return
+ end if
+
+else if
+IRM lifecycle state == IMPLEMENTED
+IRM state - PVER-F acceptance criteria = FAILED
+flag = 2
+
+if IRM lifecycle state == QUALIFIED
+flag != 1 || flag !=2
+#Warning
+return
+ end if",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 01.01.00,Decomposition missing of Issue to affected SW Components,,,,,optional,,2019-09-01 00:00:00,,,SUP.10 - 1.13.0
+,,,,Cluster,Project - ASpice (optional) - Change Request Management (SUP.10),,,,,,,,,
+,,,,Where defined?,PLIB Change Request Management -> Change Request Evaluation (Technical) -> Change Request Evaluation (technical),,,,,,,,,
+,,,,Description,Check if decomposition to I-FD has been done,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+I-SW Field ""Allocation"" Customer || System || Software || Software Design
+
+I-SW LCS >= evaluated and
+L2_planned_requirements = empty || ""No impact"" && L2_impacted_requirements = empty 
+At least one I-FD is linked to I-SW",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 01.02.00,Decomposition of ASIL not correct,,,,,optional,,open,,,SUP.10 - 1.10.0
+,,,,Cluster,Project - ASpice (optional) - (SUP.10),,,,,,,,,
+,,,,Where defined?,ASIL-Process,,,,,,,,,
+,,,,Description,,,,,,,,,,
+,,,,Pseudo Code,,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 02.01.00,Missing mandatory Attributes of Customer Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.1 - 3.14.1
+,,,,Cluster,Project - Progress - Customer Requirements (ENG.1),,,,,,,,,
+,,,,Where defined?,"PLIB -> RequirementsBasedDevelopment -> Customer Requirements -> Register, Identify & Analyse Customer Request
+-> Evaluation of DOORS L1 customer requirement (Elicitation)",,,,,,,,,
+,,,,Description,Check mandatory attributes on L1 customer requirements documentation linked to I-SW,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+Customer Requirements Baseline to be checked if I-SW Allocation is set to Customer.
+
+I-SW Field Allocation = Customer
+and I-SW L1_planned_requirements <> ""No impact"" and <> empty.
+
+I-SW in LCS Evaluated &&
+each line in document with Attribute ""Requirement Type"" FUNC_REQ or NON_FUNC_REQ
+- Allocation: valid value --> only for FUNC_REQ
+- Affected Component: Free Text not empty --> only for FUNC_REQ
+- ASIL: valid value --> only for FUNC_REQ
+- CRQ: RQONE12345678 (more than 1 ID allowed) and Linked to it´s Requirement
+- Maturity: READY FOR IMPLEMENTATION
+- ReviewComment: Free Text not empty
+- EditState: REJECTED; NOT_APPLICABLE, ACCEPTED
+
+mandatory values:
+http://fe-ecupkit.de.bosch.com/PDP/Procedure/aaSW_DOORS_Requirement_Artefacts.xlsx",,,,,,,,,
+,,,,Hints,new valid Values with PLIB 5.1 1.7.2017,,,,,,,,,
+,,,PRPS 02.02.00,Traceability Check between Change Request to Customer Requirement,,,,,outdated,,2019-09-01 00:00:00,,,ENG.1 - 3.12.0
+,,,,Cluster,Project - Progress - Customer Requirements (ENG.1),,,,,,,,,
+,,,,Where defined?,"PLIB -> RequirementsBasedDevelopment -> Customer Requirements -> Register, Identify & Analyse Customer Request",,,,,,,,,
+,,,,Description,Check if an I-SW allocated to Customer has an link to DOORS Customer Requirement <L1_planned_requirement>,,,,,,,,,
+,,,,Pseudo Code,"I-SW with Field Allocation = Customer
+L1_planned_requirement <> empty &&
+L1_planned_requirement includes a link to customer specification document in doors on L1 ",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 02.03.00,Allocation Check for Customer Requirement,,,,,outdated,,2019-09-01 00:00:00,,,ENG.1 - 3.13.0 (updated)
+,,,,Cluster,Project - Progress - Customer Requirements (ENG.1),,,,,,,,,
+,,,,Where defined?,"PLIB -> RequirementsBasedDevelopment -> Customer Requirements -> Register, Identify & Analyse Customer Request",,,,,,,,,
+,,,,Description,Allocation of RQ1 I-SW with <L1_planned_requirements> linked to DOORS L1 Requirements,,,,,,,,,
+,,,,Pseudo Code,"If L1_planned_requirements contains valid DOORS Reference, I-SW in RQ1: Allocation Field has to be set to Customer",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 02.04.00,Baseline Check of Customer Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.1 - 3.15.0
+,,,,Cluster,Project - Progress - Customer Requirements (ENG.1),,,,,,,,,
+,,,,Where defined?,"PLIB -> RequirementsBasedDevelopment -> Customer Requirements -> Register, Identify & Analyse Customer Request -> Evaluation of DOORS L1 customer requirement (Elicitation)",,,,,,,,,
+,,,,Description,Check if required Baseline was done in DOORS,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+Customer Requirements Baseline to be checked if I-SW Allocation is set to Customer.
+
+I-SW Field Allocation = Customer
+and I-SW L1_planned_requirements <> ""No impact"" and <> empty.
+
+I-SW in LCS  Committed && DOORS L1 Module which is linked to I-SW has an ACCEPTED Baseline with I-SW ID",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.00.00,Missing Impact Analysis for ECU System Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.2 - 3.16.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> ECU System Requirements -> Task: Identify & Analyse System Requirements ,,,,,,,,,
+,,,,Description,Check availablity of Impact Checklist for L2 Requirements,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+ECU System Requirements will only be checked in case I-SW Allocation is set to System and more than one System Function is affected or I-SW Allocation is set to Customer and at least one refered Customer Requirement on L1 is allocated to SYSTEM in Attribute Allocation.
+
+I-SW Field Allocation = Customer || System
+In case Allocation is Customer one Requirement in L1 (search linked module for the I-SW id and check Attribute Allocation) is allocated to SYSTEM (or SYS-ECU or SYS-SW)  and L2_planned_requirements <> empty || <> ""No impact""
+
+Check I-SW Attachment for file Name contains RE_Impact_Checklist_L2
+||
+Check configured Folder for impact Checklist",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.01.00,Missing mandatory Attributes of ECU System Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.2 - 3.20.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> ECU System Requirements -> Task: Identify & Analyse System Requirements ,,,,,,,,,
+,,,,Description,Check mandatory attributes on L2 ECU system requirements documentation linked to I-SW,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+ECU System Requirements will only be checked in case I-SW Allocation is set to System or I-SW Allocation is set to Customer and at least one refered Customer Requirement on L1 is allocated to SYSTEM in Attribute Allocation
+
+I-SW Field Allocation = Customer || System
+In case Allocation is Customer one Requirement in L1 (search linked module for the I-SW id and check Attribute Allocation) is allocated to SYSTEM (or SYS-ECU or SYS-SW)  and L2_planned_requirements <> empty || <> ""No impact""
+
+I-SW in LCS Evaluated &&
+each line in document with Attribute ""Requirement Type"" FUNC_REQ or NON_FUNC_REQ
+- Description: Free Text not empty
+- VerificationCriteria: Free Text not empty --> only for FUNC_REQ
+- Qualified for Regression Test: Yes || No --> only for FUNC_REQ
+- EffectChain: Free Text not empty --> only for FUNC_REQ
+- Affected Component: Free Text not empty --> only for FUNC_REQ
+- Allocation: SYS-ECU || SYS-SW --> only for FUNC_REQ
+- ASIL: valid value --> only for FUNC_REQ
+- CRQ: RQONE12345678 (more than 1 ID allowed) and Linked to it´s Requirement
+- Maturity: READY FOR IMPLEMENTATION
+- ReviewComment: Free Text not empty
+- EditState: REJECTED; NOT_APPLICABLE, ACCEPTED
+
+mandatory values:
+http://fe-ecupkit.de.bosch.com/PDP/Procedure/aaSW_DOORS_Requirement_Artefacts.xlsx",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.02.00,Missing mandatory Attributes of System Functionality Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.2 - 3.26.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> System Functionality Requirements -> Task: Identify & Analyse System Functionality Requirements ,,,,,,,,,
+,,,,Description,Check mandatory attributes on L3 system functionality requirements documentation linked to I-FD,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+System Functionality Requirements (and SW Requirements MD 2.2) to be checked if I-SW Allocation is set to Customer || System || Software). 
+
+I-SW Field Allocation = Customer || System || Software
+and I-FD L3_planned_requirements <> ""No impact"" and <> empty.
+
+I-FD in LCS Impleneted each requirement ID with Attribute ""Requirement Type"" FUNC_REQ [SYS-SF] or FUNC_REQ [SW] or NON_FUNC_REQ or INTERFACE_REQ
+- Description: Free Text not empty
+- VerificationCriteria: Free Text not empty --> only for FUNC_REQ [SYS-SF] or FUNC_REQ [SW] 
+- Allocation: valid value --> only for FUNC_REQ [SYS-SF] or FUNC_REQ [SW]
+- ASIL: valid value --> FUNC_REQ [SYS-SF] or FUNC_REQ [SW]  
+- CRQ: RQONE12345678 (more than 1 ID allowed) and Linked to it´s Requirement
+- Maturity: READY FOR IMPLEMENTATION
+- ReviewComment: Free Text not empty
+- EditState: REJECTED; NOT_APPLICABLE, ACCEPTED
+- SYS_InterfaceName || SYS_SignalName: Free text -->  only for INTERFACE_REQ
+- Direction: Input SW || Output SW  -->  only for INTERFACE_REQ
+LowerLimit, UpperLimit: Free text -->  only for INTERFACE_REQ
+
+mandatory values:
+http://fe-ecupkit.de.bosch.com/PDP/Procedure/aaSW_DOORS_Requirement_Artefacts.xlsx",,,,,,,,,
+,,,,Hints,I-FD submit Date <= 30.06.2017 (PLIB5.0),,,,,,,,,
+,,,PRPS 03.03.00,Missing mandatory Attributes of System Functionality and System Interface Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.2 - 3.26.1
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> System Functionality Requirements -> Task: Identify & Analyse System Functionality Requirements ,,,,,,,,,
+,,,,Description,Check mandatory attributes on L3 system functionality and system interface requirements documentation linked to I-FD,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+System Functionality Requirements (and SW Requirements MD 2.2) to be checked if I-SW Allocation is set to Customer || System || Software). 
+
+I-SW Field Allocation = Customer || System || Software
+and I-FD L3_planned_requirements <> ""No impact"" and <> empty
+
+I-FD in LCS Impleneted each requirement ID with Attribute ""Requirement Type"" FUNC_REQ [SYS-SF] or FUNC_REQ [SW] or NON_FUNC_REQ or INTERFACE_REQ
+- Description: Free Text not empty
+- VerificationCriteria: Free Text not empty --> only for FUNC_REQ [SYS-SF] or FUNC_REQ [SW]  or INTERFACE_REQ
+- Allocation: valid value --> only for FUNC_REQ [SYS-SF] or FUNC_REQ [SW]
+- ASIL: valid value --> FUNC_REQ [SYS-SF] or FUNC_REQ [SW]  
+- CRQ: RQONE12345678 (more than 1 ID allowed) and Linked to it´s Requirement
+- Maturity: READY FOR IMPLEMENTATION
+- ReviewComment: Free Text not empty
+- EditState: REJECTED; NOT_APPLICABLE, ACCEPTED
+- SYS_InterfaceName || SYS_SignalName: Free text -->  only for INTERFACE_REQ
+- Direction: Input SYS || Output SYS  -->  only for INTERFACE_REQ
+- Unit: Free Text not empty --> only for INTERFACE_REQ
+LowerLimit, UpperLimit: Free text -->  only for INTERFACE_REQ && Unit <> ""-""
+
+mandatory values:
+http://fe-ecupkit.de.bosch.com/PDP/Procedure/aaSW_DOORS_Requirement_Artefacts.xlsx",,,,,,,,,
+,,,,Hints,I-FD submit Date >= 01.07.2017 (PLIB5.1),,,,,,,,,
+,,,PRPS 03.04.00,Traceability Check between Change Request to ECU System Requirement,,,,,,,2019-09-01 00:00:00,,,ENG.2 - 3.17.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> ECU System Requirements -> Task: Identify & Analyse System Requirements ,,,,,,,,,
+,,,,Description,Check if an I-SW allocated to Customer || System has an link to DOORS Requirement <L2_planned_requirement>,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+ECU System Requirements will only be checked in case I-SW Allocation is set to System and more than one System Function is affected or I-SW Allocation is set to Customer and at least one refered Customer Requirement on L1 is allocated to SYSTEM in Attribute Allocation.
+
+I-SW Field Allocation = Customer || System
+In case Allocation is Customer one Requirement in L1 (search linked module for the I-SW id and check Attribute Allocation) is allocated to SYSTEM (or SYS-ECU or SYS-SW) and L2_planned_requirements <> empty || <> ""No impact""
+
+I-SW LCS Evaluated
+L2_planned_requirements <> empty && ""No impact"" || link to a doors Module on L2",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.05.00,Allocation Check of ECU System Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.2 - 3.18.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> ECU System Requirements -> Task: Identify & Analyse System Requirements ,,,,,,,,,
+,,,,Description,Allocation of RQ1 I-SW with <L2_planned_requirements> linked to DOORS L2 Requirements,,,,,,,,,
+,,,,Pseudo Code,"If L2_planned_requirements contains valid DOORS Reference, I-SW in RQ1: Allocation Field has to be set to Customer || System",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.06.00,Traceability Check between ECU System Requirement to Customer Requirement,,,,,outdated,,,,,ENG.2 - 3.19.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> ECU System Requirements -> Task: Identify & Analyse System Requirements ,,,,,,,,,
+,,,,Description,Tracebility of L2 ECU System Requirements to L1 Customer Requirements,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+ECU System Requirements will only be checked in case I-SW Allocation is set to Customer and valid L2 planned requirements are linked
+
+I-SW LCS Evaluated && I-SW Allocation = Customer
+L2_planned_requirements contains valid Requirements
+Check linked L2_planned_requirement in doors has link to L1 requirement and L1 requirement is listed in L1_planned_requirements tags",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.07.00,Traceability Check between Change Request to System Functionality Requirement,,,,,outdated,,2019-09-01 00:00:00,,,ENG.2 - 3.23.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> System Functionality Requirements -> Task: Identify & Analyse System Functionality Requirements ,,,,,,,,,
+,,,,Description,Check if an I-FD decomposed from I-SW allocated to Customer or System has an link to DOORS Requirement <L3_planned_requirement>,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+System Functionality Requirements to be checked if I-SW Allocation is set to Customer or System. 
+
+I-SW Field Allocation = Customer || System
+
+I-FD LCS  Implemented or higher and all 
+L3_planned_requirements <> empty && no Impact || link to a doors Module on L3",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.08.00,Traceability Check between System Functionality Requirement to Change Request,,,,,,,2019-09-01 00:00:00,,,ENG.2 - 3.24.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> System Functionality Requirements -> Task: Identify & Analyse System Functionality Requirements ,,,,,,,,,
+,,,,Description,Traceability of RQ1 I-FD Tags <L3_planned_requirements> and DOORS L3 Requirements,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+System Functionality Requirements to be checked if I-SW Allocation is set to Customer or System. 
+
+I-SW Field Allocation = Customer || System.
+
+I-FD LCS Impleneted or higher and all L3_planned_requirements have a link of corresponding DOORS module. The linked module with the L3 requirments are in line with Attribute CRQ. All requirments with CRQ I-FD ID has one link to the I-FD.",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.09.00,Traceability Check between System Functionality Requirement to ECU System Requirement,,,,,outdated,,2019-09-01 00:00:00,,,ENG.2 - 3.25.0 
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> System Functionality Requirements -> Task: Identify & Analyse System Functionality Requirements ,,,,,,,,,
+,,,,Description,Check identified ECU System Requirements based on System Functionality Requirements,,,,,,,,,
+,,,,Pseudo Code,"If I-FD linked to I-SW contains L3_planned_requirements link to min 2 different doors modules (from one or more I-FD)
+L2_planned_requirements must contain valid link to doors L2 module || L2_impacted_requirements must not be empty (impacted requirements does not required valid link)",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.10.00,Baseline Check of ECU System Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.2 - 3.21.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> ECU System Requirements -> Task: Identify & Analyse System Requirements ,,,,,,,,,
+,,,,Description,Check if required Baseline was done in DOORS,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+ECU System Requirements will only be checked in case I-SW Allocation is set to System or I-SW Allocation is set to Customer within I-SW and at least one refered Customer Requirement on L1 is allocated to SYSTEM in Attribute Allocation
+
+I-SW Field Allocation = Customer || System
+In case Allocation is Customer one Requirement in L1 (search linked module for the I-SW id and check Attribute Allocation) is allocated to SYSTEM (or SYS-ECU or SYS-SW)  and L2_planned_requirements <> empty || <> ""No impact""
+
+I-SW in LCS  Committed && DOORS L2 Module which is linked to I-SW has an ACCEPTED Baseline with I-SW ID",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 03.11.00,Baseline Check of System Functionality Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.2 - 3.27.0
+,,,,Cluster,Project - Progress - System requirments analysis (ENG.2),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> System Functionality Requirements -> Task: Identify & Analyse System Functionality Requirements ,,,,,,,,,
+,,,,Description,Check if required Baseline was done in DOORS,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+System Functionality Requirements (and SW Requirements MD 2.2) to be checked if I-SW Allocation is set to Customer || System || Software). 
+I-SW Field Allocation = Customer || System || Software
+and I-FD L3_planned_requirements <> ""No impact"" and <> empty
+
+I-FD in LCS  implemented && DOORS L3 Module which is linked to I-FD has an ACCEPTED Baseline with I-FD ID",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 04.00.00,Missing mandatory Attributes of Software Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.4 - 3.31.0
+,,,,Cluster,Project - Progress - Software requirments analysis (ENG.4),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> Software Requirements -> Task: Identify & Analyse Software Requirements ,,,,,,,,,
+,,,,Description,Check mandatory attributes on L4 software requirements documentation linked to I-FD,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+SW Requirements to be checked if I-SW Allocation is set to Customer or System or Software). 
+
+I-SW Field Allocation = Customer || System || Software
+and I-FD L4_planned_requirements <> empty
+
+I-FD in LCS Impleneted each requirement ID with Attribute ""Requirement Type"" FUNC_REQ or NON_FUNC_REQ or INTERFACE_REQ
+- Description: Free Text not empty
+- VerificationCriteria: Free Text not empty --> only for FUNC_REQ
+- Test Level: URT || SFT --> only for FUNC_REQ
+- ASIL: valid value --> only for FUNC_REQ
+- CRQ: RQONE12345678 (more than 1 ID allowed) and Linked to it´s Requirement
+- Maturity: READY FOR IMPLEMENTATION
+- ReviewComment: Free Text not empty
+- EditState: REJECTED; NOT_APPLICABLE, ACCEPTED
+- SW_InterfaceName || SW_SignalName: Free text -->  only for INTERFACE_REQ
+- Direction: Input SW || Output SW  -->  only for INTERFACE_REQ
+LowerLimit, UpperLimit: Free text -->  only for INTERFACE_REQ
+
+mandatory values:
+http://fe-ecupkit.de.bosch.com/PDP/Procedure/aaSW_DOORS_Requirement_Artefacts.xlsx",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 04.01.00,Missing mandatory Attributes of Software and Software Interface Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.4 - 3.31.1
+,,,,Cluster,Project - Progress - Software requirments analysis (ENG.4),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> Software Requirements -> Task: Identify & Analyse Software Requirements ,,,,,,,,,
+,,,,Description,Check mandatory attributes on L4 software requirements documentation linked to I-FD,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+SW Requirements to be checked if I-SW Allocation is set to Customer or System or Software). 
+
+I-SW Field Allocation = Customer || System || Software
+and I-FD L4_planned_requirements <> empty
+
+I-FD in LCS Impleneted each requirement ID with Attribute ""Requirement Type"" FUNC_REQ or NON_FUNC_REQ or INTERFACE_REQ
+- Description: Free Text not empty
+- VerificationCriteria: Free Text not empty --> only for FUNC_REQ and INTERFACE_REQ
+- Test Level: URT || SFT --> only for FUNC_REQ
+- ASIL: valid value --> only for FUNC_REQ
+- CRQ: RQONE12345678 (more than 1 ID allowed) and Linked to it´s Requirement
+- Maturity: READY FOR IMPLEMENTATION
+- ReviewComment: Free Text not empty
+- EditState: REJECTED; NOT_APPLICABLE, ACCEPTED
+- SW_InterfaceName || SW_SignalName: Free text -->  only for INTERFACE_REQ
+- Direction: Input SW || Output SW  -->  only for INTERFACE_REQ
+- Unit: Free Text not empty --> only for INTERFACE_REQ
+LowerLimit, UpperLimit: Free text -->  only for INTERFACE_REQ @@ Unit <> ""-""
+
+mandatory values:
+http://fe-ecupkit.de.bosch.com/PDP/Procedure/aaSW_DOORS_Requirement_Artefacts.xlsx",,,,,,,,,
+,,,,Hints,01.07.2017 (PLIB5.1),,,,,,,,,
+,,,PRPS 04.02.00,Traceability Check between Change Request to Software Requirement,,,,,,,2019-09-01 00:00:00,,,ENG.4 - 3.28.0
+,,,,Cluster,Project - Progress - Software requirments analysis (ENG.4),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> Software Requirements -> Task: Identify & Analyse Software Requirements ,,,,,,,,,
+,,,,Description,Check if an I-FD decomposed from I-SW allocated to Customer or System or Software has an link to DOORS Requirement <L4_planned_requirement>,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+SW Requirements to be checked if I-SW Allocation is set to Customer or System or Software). 
+
+I-SW Field Allocation = Customer || System || Software.
+
+I-FD LCS  Implemented or higher and all 
+L4_planned_requirements <> empty && ""No Impact"" || link to a doors Module on L4",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 04.03.00,Traceability Check between Software Requirement to Change Request,,,,,,,2019-09-01 00:00:00,,,ENG.4 - 3.29.0
+,,,,Cluster,Project - Progress - Software requirments analysis (ENG.4),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> Software Requirements -> Task: Identify & Analyse Software Requirements ,,,,,,,,,
+,,,,Description,Traceability of RQ1 I-FD Tags <L4_planned_requirements> and DOORS L4 Requirements,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+SW Requirements to be checked if I-SW Allocation is set to Customer or System or Software). 
+
+I-SW Field Allocation = Customer || System || Software.
+
+I-FD LCS Impleneted or higher and all L4_planned_requirements have a link of corresponding DOORS module. The linked module with the L4 requirments are in line with Attribute CRQ. All requirments with CRQ I-FD ID has one link to the I-FD.",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 04.04.00,Traceability Check between Software Requirement to System Functionality Requirement,,,,,,,2019-09-01 00:00:00,,,ENG.4 - 3.30.0
+,,,,Cluster,Project - Progress - Software requirments analysis (ENG.4),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> Software Requirements -> Task: Identify & Analyse Software Requirements ,,,,,,,,,
+,,,,Description,Check correctness of linked L4 Requirements to L3 Requirements,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+Software Requirements will only be checked in case I-SW Allocation is set to Customer or System or Software or I-SW Allocation is set to Customer or System and at least one refered ECU System Requirement on L2 is allocated to SW in Attribute Allocation or at least one refered System Functionality Requirement on L3 is allocated to SW in Attribute Allocation.
+
+Issue FD LCS Implenented
+L3_planned_requirements <> empty && <> no Impact && if I-SW Allocation Customer || System check linked doors module (search all Requirments of linked module which contains the related I-IFD ID and check if all these Requirements contains a link to L2 Requirement)
+
+
+Issue FD LCS Implenented and I-SW Allocation is Customer || System ||Software
+L4_planned_requirements <> empty && <> No impact &&  if I-SW Allocation Customer || System || Software check linked doors module (search all Requirments of linked module which contains the related I-IFD ID and check if all these Requirements contains a link to L3 Requirement or L2 Requirement)
+
+Hint: During Rollout and Delta Approach it might be possible that there is a L4 Requirement without L3 Requirement (L4 was indroduced with MD3.0)",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRPS 04.05.00,Baseline Check of Software Requirements,,,,,,,2019-09-01 00:00:00,,,ENG.4 - 3.32.0
+,,,,Cluster,Project - Progress - Software requirments analysis (ENG.4),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> Software Requirements -> Task: Identify & Analyse Software Requirements ,,,,,,,,,
+,,,,Description,Check if required Baseline was done in DOORS,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+SW Requirements to be checked if I-SW Allocation is set to Customer or System or Software). 
+
+I-SW Field Allocation = Customer || System || Software
+and I-FD L4_planned_requirements <> empty
+
+I-FD in LCS implemented && DOORS L4 Module which is linked to I-FD has an ACCEPTED Baseline with I-FD ID",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,Project - ASpice Measures,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,ID,Name,,,,,"Execution in 
+IP Tool",Check retrospectively up to,"implemented in 
+IP Tool
+from","relevant for 
+PQA",Links,Remarks
+,,,PRAS 01.00.00,MAN.3 - Task Planning and Tracking,,,,,,,open,,,MAN.3
+,,,,Cluster,Project - ASpice MAN.3 - RQ1 and ILM,,,,,,,,,
+,,,,Where defined?,"MAN.3 ruleset available in Proclib, VCC questionaire (detailed check criteria available)",,,,,,,,,
+,,,,Description,"(1) Check on milestone planning available with subphases in agreement with Customer milestones? Overall effort estimation for the project phases?
+
+(2) Detailed Time schedule available, updated and tracked?   
+
+(2) Does a clear definition for task exist ?  Scope, work break down, Consistency (Hint: Single task should not exceed 2 weeks duration)  How is the Task status maintained and tracked ? (Includes delegated tasks in extended teams )  How does the team handle the schedule delay issues arising during development phase? Escalation mechanism to be defined and followed? Are BCs delivered as per the planned BC delivery schedule ? ",,,,,,,,,no interface possible to ILM
+,,,,Pseudo Code,"(1) and (2) ILM
+check: existence of file formats .MPP, .xls, .xlsx, .ppt, .pptx under project folder ILM link --> 10_PM -> B-Mngt -> B5-Schedule
+check: timestamps of documents, date not updated +/- 2 months from planned date of audit/check
+check: versioning in ILM, status of document (valid) in ILM, other versions not to be in valid state
+
+(2) RQ1
+RQ1 automated check for BC releases (planned vs actual dates)
+BC-R planned vs actual dates (DELAY)
+//rule affects BC-R planning
+
+if BC Release.LIFE_CYCLE_STATE !=NEW then
+return
+ end if
+
+//planned vs actual delivery dates in RQ1
+if actualdate - planneddate >= 5
+Warning ""DELAY in BC-R""
+end if
+
+Workitems to be created for Reviews and Testing tasks in RQ1 IssueFD (applicable for RbD ASPICE samples)
+RQ1 automated check for Workitems
+//ruleset for workitems created for review and testing tasks
+
+Flow Method planning?
+Check under I-FDs, 
+if Workitem created with description title containing Review or Testing
+if planned dates!= empty && if efforts <=64 hrs 
+ok else Warning",,,,,,,,,Check Flow Method rules
+,,,,Hints,,,,,,,,,,
+,,,PRAS 01.01.00,MAN.3 - Resource Loading and Skill matrix,,,,,,,open,,,MAN.3
+,,,,Cluster,Project - ASpice - ILM (MAN.3),,,,,,,,,
+,,,,Where defined?,PLIB,,,,,,,,,
+,,,,Description,"Skill Matrix, addressing training gaps
+exception Germany due to BER",,,,,,,,,
+,,,,Pseudo Code,"Skill matrix document link to be taken from CM plan under project folder ILM -> PM -> check availability of skill matrix document
+check: existence of file formats .MPP, .xls, .xlsx, .ppt, .pptx under project folder ILM link --> 10_PM -> B-Mngt -> B5-Schedule
+check: timestamps of documents, date not updated +/- 2 months from planned date of audit/check",,,,,,,,,
+,,,,Hints,BER - check not applicable in Germany,,,,,,,,,
+,,,PRAS 01.02.00,"Project Management Plan (- Project Guide) Contracting (Project, FMEA)",,,,,,,open,,,MAN.3
+,,,,Cluster,Project - ASpice - ILM (MAN.3),,,,,,,,,
+,,,,Where defined?,PLIB,,,,,,,,,
+,,,,Description,"Project Guide, Project Contracting, FMEA, Project Org chart, Communication plan",,,,,,,,,
+,,,,Pseudo Code,"check: existence of file formats .MPP, .xls, .xlsx, .ppt, .pptx under project folder ILM link --> 10_PM ->
+check: timestamps of documents, date not updated +/- 2 months from planned date of audit/check",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRAS 01.03.00,"Project Review and Reporting (Including CPC-SW, Traffic light list SW)",,,,,,,open,,,MAN.3
+,,,,Cluster,Project - ASpice - ILM (MAN.3),,,,,,,,,
+,,,,Where defined?,PLIB,,,,,,,,,
+,,,,Description,"1. PRC plan
+2. PRC minutes 
+3. CPR/Traffic light 
+4. OPL 
+5. Escalation mails",,,,,,,,,
+,,,,Pseudo Code,"link to be taken from CM plan under project folder ILM -> check availability of documents in ILM
+check: existence of file formats .MPP, .xls, .xlsx, .ppt, .pptx under project folder ILM link --> 10_PM -> B-Mngt -> B5-Schedule
+check: timestamps of documents, date not updated +/- 2 months from planned date of audit/check",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRAS 01.04.00,ISO26262 artefacts check,,,,,,,open,,,MAN.3
+,,,,Cluster,Project - ASpice - ILM (MAN.3),,,,,,,,,
+,,,,Where defined?,PLIB,,,,,,,,,
+,,,,Description,"1. Safety goals
+2. ASIL Impact analysis
+3. HARA 
+4. DIA
+5. Platform safety requirements
+6. Safety plan ( reviews and updates)  
+7. ECU-MST (test case reviews and reports)  
+8. Baselining   
+9. Safety case conformance review",,,,,,,,,
+,,,,Pseudo Code,"link to be taken from CM plan under project folder ILM -> check availability of documents in ILM
+check: existence of file formats .MPP, .xls, .xlsx, .ppt, .pptx under project folder ILM link --> 10_PM -> B-Mngt -> B5-Schedule
+check: timestamps of documents, date not updated +/- 2 months from planned date of audit/check",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRAS 02.00.00,Planning and Tracking of Quality Assurance activities and reviews,,,,,,,open,,,SUP.1
+,,,,Cluster,Project - ASpice - ILM and Provisor (SUP.1),,,,,,,,,
+,,,,Where defined?,PLIB,,,,,,,,,
+,,,,Description,Project QA plan,,,,,,,,,
+,,,,Pseudo Code,"Link to be taken from CM plan under project folder ILM -> check availability of QA plan and QA reporting documents in ILM
+
+QA artefacts extract via Provisor QAM PVER report",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRAS 02.01.00,Quality Assurance Metrics Tracking,,,,,,,open,,,SUP.1
+,,,,Cluster,Project - ASpice - Provisor (SUP.1),,,,,,,,,
+,,,,Where defined?,PLIB,,,,,,,,,
+,,,,Description,Project QA plan,,,,,,,,,
+,,,,Pseudo Code,"Provisor QAM PVER report 
+input is RQ1 release or PVER name
+
+Project Tracking
+findings from QAM PVER report returns not ok
+
+QAM findings dept. wise done by QCs, gap seen in QAM findings addressed at PVER level/ project level",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRAS 03.00.00,Problem Resolution Management,,,,,,,open,,,SUP.9
+,,,,Cluster,Project - ASpice - ILM and RQ1 (SUP.9),,,,,,,,,
+,,,,Where defined?,PLIB,,,,,,,,,
+,,,,Description,"1. RQ1
+2. RCA - LLL  
+3. Urgent resolution action plan 
+4. OPL",,,,,,,,,
+,,,,Pseudo Code,"ILM -  check for defect trend analysis document, link from CM plan
+check on I-FDs with category Defect for given RQ1 PVER release
+
+LIFE CYCLE state of I-SW / I-FD >= Implemented
+
+input fields = RQ1 PVER releases and RQ1 Project id
+
+Defection detection attributes, Occurence, Severity!= empty
+
+LLL updated for Severity == high
+Return Warning message 
+if LLL not required then no warning related to LLL
+
+if LLL !=not required
+Measures updated, LLL updated (empty or null contents not be found)
+
+possibility to extract data from RQ1 or re-use from DFM core metrics
+
+take frm RQ1 - LLL Detailed Description",,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,PRAS 03.01.00,Risk Handling,,,,,,,open,,,SUP.9
+,,,,Cluster,Project - ASpice - ILM (SUP.9),,,,,,,,,
+,,,,Where defined?,PLIB,,,,,,,,,
+,,,,Description,Risk list,,,,,,,,,
+,,,,Pseudo Code,Link to be taken from CM plan under project folder ILM -> check availability of documents in ILM,,,,,,,,,
+,,,,Hints,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,Additional Checks for Customer BMW,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,ID,Name,,,,,"Execution in 
+IP Tool",Check retrospectively up to,"implemented in 
+IP Tool
+from","relevant for 
+PQA",Links,Remarks
+,,,ACCB 01.00.00,Missing aggreement of OEM for development of Change Request,,,,,outdated,,2019-09-01 00:00:00,,,43.1.1
+,,,,Cluster,Change Request Management (SUP.10),,,,,,,,,
+,,,,Where defined?,"Customer Specific Rule (ECB, ECV) which follow Data exhange with OEM via RQ1 / ASAM",,,,,,,,,
+,,,,Description,"Check State of CustomerReview in RQ1 Issue-SW. Contact respective responsible on customer side to get a confirmation of the proposed changes.
+
+Issue SW shall be remarked if the confirmations of proposed changes are not given. Attribute External Review in tab External of Issue SW is not set to Done or Not required.",,,,,,,,,
+,,,,Pseudo Code,"If IssueSW.hasMappedReleases.isPilot==YES AND IssueSW.hasMappedReleases.LastMinuteChange==NO and IssueSW.hasMappedReleases.hasMappedRelease.SpecFreeze <= CurrentDate
+
+If IssueSW.ExternalReview != (Done or NotRequired) AND IssueSW != (Conflicted or Canceled)
+
+",,,,,,,,,
+,,,,Hint,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,1.10.0
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,Additional Checks for Customer VW,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,ID,Name,,,,,"Execution in 
+IP Tool",Check retrospectively up to,"implemented in 
+IP Tool
+from","relevant for 
+PQA",Links,Remarks
+,,,ACCV 01.00.00,Missing Impact Analysis for System Functionality and Software Requirements,,,,,,,2019-09-01 00:00:00,,,53.1.0
+,,,,Cluster,Software requirments analysis (ENG.4),,,,,,,,,
+,,,,Where defined?,PLIB -> RequirementsBasedDevelopment -> System Functionality Requirements -> Task: Identify & Analyse System Functionality Requirements ,,,,,,,,,
+,,,,Description,Check availablity of Impact Checklist for L3/L4 Requirements,,,,,,,,,
+,,,,Pseudo Code,"Entry Criteria:
+Impact Checklist for System Functionality and Software Requirements to be checked if I-SW Allocation is set to Customer or System or Software. 
+
+I-SW Field Allocation = Customer || System || Software
+and I-FD LCS implemented or higher
+and L3_planned_requirements <> empty || L4_planned_requirements <> empty
+
+Check I-FD Attachment for file Name contains RE_Impact_Checklist_L3/L4
+||
+Check configured Folder for impact Checklist",,,,,,,,,
+,,,,Hint,,,,,,,,,,

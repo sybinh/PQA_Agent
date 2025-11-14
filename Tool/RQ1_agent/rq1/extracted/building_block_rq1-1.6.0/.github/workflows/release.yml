@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  # trigger when a release is published
+  release:
+    types: [published]
+
+  # trigger manually by maintainer
+  workflow_dispatch:
+
+concurrency:
+  group: "release"
+  cancel-in-progress: false
+
+jobs:
+  publish_package:
+    name: Publish package to artifactory
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install project management tool
+        run: pip install uv
+
+      - name: Build package
+        run: uv build
+
+      - name: Publish package to artifactory
+        run: uv publish --publish-url ${{ secrets.ARTIFACTORY_URL }} -u ${{ secrets.ARTIFACTORY_USER }} -p ${{ secrets.ARTIFACTORY_TOKEN }} dist/*

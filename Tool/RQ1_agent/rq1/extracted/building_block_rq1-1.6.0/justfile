@@ -1,0 +1,10 @@
+set shell := ["powershell.exe", "-c"]
+
+doc:
+    uv run sphinx-build -M html ./docs/ ./docs/_build/
+
+test:
+    uv run pytest -n 4
+
+gen:
+    uv run python gen/main.py src/rq1
