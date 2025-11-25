@@ -2,23 +2,25 @@
 
 **PQA_Agent v1.0.0** - An MCP (Model Context Protocol) server for integrating with RQ1/ClearQuest system using the `building-block-rq1` library.
 
-## ?? Current Status: PHASE 1 - RQ1 Data Access
+## Project Status
 
-**Focus**: Build and test basic RQ1 data access before adding additional features.
+### Phase 1: RQ1 Data Access (IN PROGRESS)
+- [x] Project structure setup
+- [x] building-block-rq1 library installed (v1.6.0)
+- [x] Excel rules parsed (101 rules: BBM 23 + QAM 22 + IPT 56)
+- [x] Documentation organized in docs/ folder
+- [ ] RQ1 client implementation
+- [ ] Connection testing with ACCEPTANCE environment
 
-### ? Completed
-- Project structure setup
-- building-block-rq1 library installed (v1.6.0)
-- Terminology aligned with library conventions
-- 4 MCP tools defined (placeholder implementations)
+### Phase 2: Rule Implementation (READY TO START)
+- Top 10 priority rules identified
+- Excel-to-Java mapping completed
+- Implementation guide prepared
+- Estimated: 30-40 hours for Phase 2A
 
-### ?? Current Task
-- **Implement rq1_client.py** - Connect to RQ1 using building-block-rq1
-- **Test connection** - Verify data retrieval works
-
-### ?? Next Phases (After Phase 1 works)
-- Phase 2: Add rule checking functionality (TBD - requirements needed)
-- Phase 3: Integration and optimization
+### Phase 3: Integration (FUTURE)
+- MCP server integration
+- Testing and optimization
 
 ## Features
 
@@ -27,6 +29,27 @@
 - **Query Issues**: Query Issues by title, status, or other criteria using OSLC query
 - **Get Issue History**: View the History records for an Issue
 
+## Project Structure
+
+```
+RQ1_agent/
+??? docs/                    # Documentation
+?   ??? RULES_COMPLETE.md   # All 101 rules consolidated
+?   ??? EXCEL_TO_JAVA_MAPPING.md
+?   ??? IMPLEMENTATION_GUIDE.md
+??? scripts/                 # Excel parsing utilities
+?   ??? parse_excel_rules.py
+?   ??? excel_converter.py
+?   ??? excel_change_detector.py
+??? src/                     # Source code
+?   ??? rq1_client.py       # RQ1 client implementation
+?   ??? rq1_server.py       # MCP server
+?   ??? test_connection.py  # Connection testing
+??? rq1/                     # RQ1 reference data
+?   ??? POST_V_1.0.3/       # POST Tool v1.0.3
+??? .env.example            # Environment template
+```
+
 ## Installation
 
 ### Prerequisites
@@ -34,52 +57,30 @@
 - Python 3.10 or higher
 - `uv` package manager (recommended)
 - Access to RQ1/ClearQuest system
-- RQ1 Python library (to be provided)
+- building-block-rq1 library (v1.6.0)
 
 ### Setup
 
 1. Clone this repository:
 ```bash
-git clone <repository-url>
-cd rq1-mcp-server
+git clone https://github.com/sybinh/PQA_Agent.git
+cd RQ1_agent
 ```
 
 2. Set up environment variables:
 ```bash
-# Copy example and edit with your credentials
 cp .env.example .env
-
-# Edit .env file:
-RQ1_USER=your_bosch_username
-RQ1_PASSWORD=your_password
-RQ1_TOOLNAME=YourToolName        # Tên tool c?a B?N
-RQ1_TOOLVERSION=1.0.0            # Version tool c?a B?N
-RQ1_ENVIRONMENT=PRODUCTIVE       # ho?c ACCEPTANCE ?? test
+# Edit .env with your credentials
 ```
-
-**?? Important: Tool Registration**
-
-`RQ1_TOOLNAME` và `RQ1_TOOLVERSION` là ?? **??nh danh tool c?a b?n**:
-
-- **TOOLNAME**: Tên tool b?n ?ang phát tri?n (ví d?: "MyDevAssistant", "AutoQA", "TeamXTool")
-- **TOOLVERSION**: Version c?a tool ?ó (ví d?: "1.0.0", "2.1.5")
-- ?? **TOOLNAME ph?i ???c RQ1 admins whitelist** tr??c khi s? d?ng!
-
-**Ví d? th?c t?**:
-```bash
-# Tool c?a team b?n tên "DevAssistant" version "1.2.0"
-RQ1_TOOLNAME=DevAssistant
-RQ1_TOOLVERSION=1.2.0
-```
-
-**N?u ch?a ??ng ký toolname**:
-- ?? tr?ng ho?c dùng default `PQA_Agent` (c?n ???c RQ1 admins whitelist)
-- Contact RQ1 administrators ?? ??ng ký toolname "PQA_Agent"
-- Chi ti?t xem file `TOOLNAME_VERSION.md`
 
 3. Install dependencies:
 ```bash
-uv sync
+uv pip install -r requirements.txt
+```
+
+3. Install dependencies:
+```bash
+uv pip install -r requirements.txt
 ```
 
 ## Usage
@@ -87,38 +88,27 @@ uv sync
 ### Running the Server
 
 ```bash
-uv run rq1_server.py
+python src/rq1_server.py
 ```
 
-### Connecting to Claude Desktop
+### MCP Client Configuration
 
-Add this configuration to your Claude Desktop config file (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS or `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
+For Claude Desktop or other MCP clients, add to config file:
 
 ```json
 {
   "mcpServers": {
     "rq1": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "/absolute/path/to/rq1-mcp-server",
-        "run",
-        "rq1_server.py"
-      ],
+      "command": "python",
+      "args": ["C:/path/to/RQ1_agent/src/rq1_server.py"],
       "env": {
         "RQ1_USER": "your_username",
-        "RQ1_PASSWORD": "your_password",
-        "RQ1_TOOLNAME": "your_tool_name",
-        "RQ1_TOOLVERSION": "your_tool_version"
+        "RQ1_PASSWORD": "your_password"
       }
     }
   }
 }
 ```
-
-### Connecting to Other MCP Clients
-
-The server uses stdio transport, so it can be connected to any MCP-compatible client that supports this transport method.
 
 ## MCP Tools Available
 
@@ -175,14 +165,27 @@ Retrieve the History records for an Issue.
 | Title property | **dcterms__title** | ~~title~~ |
 | Description | **dcterms__description** | ~~description~~ |
 
-## Reference Documentation
+## Documentation
 
-- **RQ1_LIBRARY_GUIDE.md** - Complete building-block-rq1 library documentation
-- **building-block-rq1 examples/** - Example code in `rq1/extracted/building_block_rq1-1.6.0/examples/`
+All documentation has been organized in the `docs/` folder:
+
+- **docs/RULES_COMPLETE.md** - All 101 Excel rules consolidated (BBM 23 + QAM 22 + IPT 56)
+- **docs/EXCEL_TO_JAVA_MAPPING.md** - Mapping between Excel rules and Java implementation
+- **docs/IMPLEMENTATION_GUIDE.md** - Step-by-step guide for implementing rules
+- **docs/RQ1_LIBRARY_GUIDE.md** - Complete building-block-rq1 library documentation
+- **docs/RQ1_RULES_DETAILED.md** - Detailed specifications for all 37 Java rules
+- **docs/EXCEL_RULES_BY_PRIORITY.md** - Excel rules organized by priority
+
+## Quick Links
+
+- **Excel Rules Parser**: `parse_excel_rules.py` - Reusable script for future Excel versions
+- **Original POST Tool**: `rq1/POST_V_1.0.3/` - Java implementation reference
+- **Parsed Rules Output**: `rq1/POST_V_1.0.3/parsed_rules/` - BBM, QAM, IPT markdown files
 
 ## Next Steps
 
-1. **Implement rq1_client.py** - Replace placeholder with actual library calls
-2. **Test connection** - Verify each tool works with ACCEPTANCE environment  
-3. **Get user feedback** - Ensure data access meets requirements
+1. **Complete Phase 1**: Implement and test RQ1 data access
+2. **Begin Phase 2A**: Implement Top 10 priority rules (~30-40 hours)
+3. **Test with ACCEPTANCE**: Validate against real RQ1 data
+4. **Iterate**: Move through remaining rules with Excel+Java backing
 4. **Then** consider additional features (rule checking, etc.)
