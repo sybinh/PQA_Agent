@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2009, 2021 Robert Bosch GmbH and its subsidiaries.
+ * This program and the accompanying materials are made available under
+ * the terms of the Bosch Internal Open Source License v4
+ * which accompanies this distribution, and is available at
+ * http://bios.intranet.bosch.com/bioslv4.txt
+ */
+package Rq1Cache.Records;
+
+import Rq1Cache.Rq1NodeDescription;
+
+/**
+ *
+ * @author gug2wi
+ */
+public class Rq1HardwareProject extends Rq1Project {
+
+    public Rq1HardwareProject(Rq1NodeDescription subjectDescription) {
+        super(subjectDescription);
+    }
+
+}

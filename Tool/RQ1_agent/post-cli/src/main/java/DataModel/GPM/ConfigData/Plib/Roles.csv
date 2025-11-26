@@ -1,0 +1,47 @@
+﻿RoleID;RoleName;RoleShortName
+1;CM Responsible ECU Project;CM-R
+2;Calibration Engineer;CalEng
+3;Department Head;DH
+4;ECU Project Manager;PjM ECU
+5;EEPROM Department Responsible;DER
+6;FMEA Moderator;FMEA-Mod
+7;Function Developer;FN-D
+8;Group Manager;GrM
+9;HW Architect ECU;HW ARCH ECU
+10;HW Engineering Product Quality;HW-EPQ
+11;HW Integrator;HW INT
+12;Launch Manager;LaM
+13;Lead-EPQ;Lead-EPQ
+14;Moderator;MOD
+15;Production Engineering Coordinator Customer;PEC-C
+16;Product Line Architect;PL-A
+17;Project Safety Manager;PSM
+18;Project Security Manager;PSecM
+19;Platform Manager;PfM
+20;Project Manager;PjM
+21;Q-Champion Department CAL;QC-D CAL
+22;Q-Champion Department;QC-D
+23;;QC-P
+24;QG Moderator;
+25;Smart Card Responsible;SCR
+26;System Engineer Customer;SEC
+27;Subproject Manager Calibration;SPjM CAL
+28;Subproject Manager Hardware;SPjM HW
+29;Subproject Manager Software;SPjM SW
+30;Software Project Developer;SW PD
+31;SW Resource Manager;SW ResMan
+32;Software System Designer;SW SD
+33;Software Developer;SW-D
+34;SW Series Maintenance Responsible;SW-SMR
+35;Technical Sales;Sales
+36;Subcontract Manager;SCM
+37;System Architect;SysArch
+38;System Project Manager;Sys-PjM
+39;Technical Sales (ECU);
+40;Technical Sales (SW & Calibration);
+41;Test Automation Engineer;
+42;Test Engineer;
+43;VIVA Tester;VIVA Tester
+44;Innovation Manager;IM
+45;Supplier Manager;SupM
+46;SW-Sharing Manager;SWSH-M

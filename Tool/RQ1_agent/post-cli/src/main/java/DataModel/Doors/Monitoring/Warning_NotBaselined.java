@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2009, 2020 Robert Bosch GmbH and its subsidiaries.
+ * This program and the accompanying materials are made available under
+ * the terms of the Bosch Internal Open Source License v4
+ * which accompanies this distribution, and is available at
+ * http://bios.intranet.bosch.com/bioslv4.txt
+ */
+package DataModel.Doors.Monitoring;
+
+import Monitoring.RuleI;
+import Monitoring.Warning;
+
+public class Warning_NotBaselined extends Warning {
+
+    public Warning_NotBaselined(RuleI rule, String urn) {
+        super(rule, "Link to not baselined DOORS object.");
+        setDescription("The URN " + urn + " points to a not baselined DOORS object.");
+    }
+
+}

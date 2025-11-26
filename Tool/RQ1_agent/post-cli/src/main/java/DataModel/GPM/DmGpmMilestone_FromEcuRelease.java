@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2009, 2021 Robert Bosch GmbH and its subsidiaries.
+ * This program and the accompanying materials are made available under
+ * the terms of the Bosch Internal Open Source License v4
+ * which accompanies this distribution, and is available at
+ * http://bios.intranet.bosch.com/bioslv4.txt
+ */
+package DataModel.GPM;
+
+import DataModel.GPM.ConfigData.DmGpmConfig_Task;
+import DataModel.Rq1.Records.DmRq1EcuRelease;
+import DataModel.Rq1.Records.DmRq1User;
+import DataModel.Rq1.Records.DmRq1WorkItem;
+import DataModel.Rq1.Records.DmRq1WorkItem_HwEcu;
+import util.EcvDate;
+
+/**
+ *
+ * @author GUG2WI
+ */
+public class DmGpmMilestone_FromEcuRelease extends DmGpmMilestone_FromRelease<DmRq1EcuRelease> {
+
+    DmGpmMilestone_FromEcuRelease(DmRq1EcuRelease ecu) {
+        super(ecu, Type.ECU, buildElementType(ecu));
+    }
+
+    private static String buildElementType(DmRq1EcuRelease ecu) {
+        String classification = ecu.CLASSIFICATION.getValueAsText();
+        return ((classification.isBlank() ? "HW " : classification) + " Delivery");
+    }
+
+    @Override
+    public DmRq1WorkItem createAndSaveWorkitem(DmGpmConfig_Task configTableRow, String title, EcvDate plannedDate, String effort, DmRq1User assignee) {
+        DmRq1WorkItem newWorkitem = DmRq1WorkItem_HwEcu.createBasedOnRelease(release, project, null);
+        setMilestoneDataAndSaveNewWorkitem(newWorkitem, configTableRow, title, plannedDate, effort, assignee);
+        return (newWorkitem);
+    }
+
+    @Override
+    public String getClassification() {
+        return (release.CLASSIFICATION.getValueAsText());
+    }
+
+    @Override
+    public String getElementType() {
+        return (buildElementType(release));
+    }
+}
