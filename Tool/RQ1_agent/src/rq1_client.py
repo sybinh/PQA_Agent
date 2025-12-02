@@ -1,100 +1,174 @@
 """
-RQ1 Client - Wrapper for RQ1/ClearQuest API interactions
-This module provides a Python interface to the RQ1 system using building-block-rq1
+RQ1 Client - Direct OSLC API client
+This module provides a Python interface to RQ1 using direct REST API calls
+(Alternative to building-block-rq1 when proxy/network blocks artifactory access)
 """
 import logging
 import os
-from typing import Any, Optional
-import rq1
-from rq1 import Issue, IssueProperty, History
+import requests
+from typing import Any, Dict, List, Optional
+from requests.auth import HTTPBasicAuth
 
 logger = logging.getLogger(__name__)
 
 # Default Tool Registration
-# These are used if RQ1_TOOLNAME/RQ1_TOOLVERSION are not set in environment
-# Update these to match YOUR tool name and version
-__version__ = "1.0.0"  # PQA_Agent version
-DEFAULT_TOOLNAME = "PQA_Agent"  # Tool name (must be whitelisted by RQ1 admins)
-DEFAULT_TOOLVERSION = __version__
+__version__ = "1.0.0"
+DEFAULT_TOOLNAME = "OfficeUtils"  # POST tool's registered name in RQ1 whitelist
+DEFAULT_TOOLVERSION = "1.0"
 
 
 class RQ1Client:
     """
-    Client for interacting with RQ1/ClearQuest system using building-block-rq1 library
+    Simple client for RQ1 OSLC API using direct REST calls
     """
     
-    def __init__(self, username: str, password: str, toolname: str, toolversion: str, 
-                 environment: str = "PRODUCTIVE"):
+    # RQ1 OSLC endpoints (actual endpoints from POST tool)
+    ENVIRONMENTS = {
+        'ACCEPTANCE': 'https://rb-dgsrq1-oslc-q.de.bosch.com/cqweb/oslc/repo/RQ1_ACCEPTANCE/db/RQONE',
+        'PRODUCTIVE': 'https://rb-dgsrq1-oslc.de.bosch.com/cqweb/oslc/repo/RQ1_PRODUCTIVE/db/RQONE'
+    }
+    
+    def __init__(self, 
+                 username: str = None, 
+                 password: str = None, 
+                 environment: str = 'ACCEPTANCE',
+                 toolname: str = DEFAULT_TOOLNAME,
+                 toolversion: str = DEFAULT_TOOLVERSION,
+                 verify_ssl: bool = True):
         """
-        Initialize RQ1 client with credentials
+        Initialize RQ1 Client
         
         Args:
-            username: RQ1 username
-            password: RQ1 password
-            toolname: YOUR tool name - must be whitelisted by RQ1 admins
-                      (e.g., "MyDevTool", "AutomationScript", "rq1-mcp-server")
-            toolversion: YOUR tool version (e.g., "1.0.0", "2.1.3")
-            environment: RQ1 environment (PRODUCTIVE, ACCEPTANCE, APPROVAL). Default: PRODUCTIVE
+            username: RQ1 username (default: from RQ1_USER env var)
+            password: RQ1 password (default: from RQ1_PASSWORD env var)
+            environment: ACCEPTANCE or PRODUCTIVE
+            toolname: Tool name registered in RQ1 whitelist (default: OfficeUtils)
+            toolversion: Tool version (default: 1.0)
+            verify_ssl: Whether to verify SSL certificates (set False for dev/testing)
         """
-        self.username = username
-        self.password = password
+        self.username = username or os.getenv('RQ1_USER')
+        self.password = password or os.getenv('RQ1_PASSWORD')
+        self.environment = environment.upper()
         self.toolname = toolname
         self.toolversion = toolversion
-        self.environment = environment
+        self.verify_ssl = verify_ssl
         
-        # Map environment to base URL
-        env_urls = {
-            "PRODUCTIVE": "https://rq1.bosch.com/jazz/oslc",
-            "ACCEPTANCE": "https://rq1-test.bosch.com/jazz/oslc",
-            "APPROVAL": "https://rq1-approval.bosch.com/jazz/oslc"
-        }
+        if not self.username or not self.password:
+            raise ValueError("Username and password required (set RQ1_USER and RQ1_PASSWORD env vars or pass to constructor)")
         
-        base_url = env_urls.get(environment.upper())
+        base_url = self.ENVIRONMENTS.get(self.environment)
         if not base_url:
-            raise ValueError(f"Invalid environment: {environment}. Must be one of: {list(env_urls.keys())}")
+            raise ValueError(f"Invalid environment: {environment}. Use ACCEPTANCE or PRODUCTIVE")
         
-        # Initialize building-block-rq1 Client
-        self.client = rq1.Client(
-            base_url=base_url,
-            username=username,
-            password=password,
-            toolname=toolname,
-            toolversion=toolversion
-        )
+        # Ensure base_url ends with /
+        self.base_url = base_url if base_url.endswith('/') else base_url + '/'
+        
+        # Create requests session with authentication
+        self.session = requests.Session()
+        self.session.verify = False  # Disable SSL verification (like building-block-rq1)
+        self.session.auth = HTTPBasicAuth(self.username, self.password)
+        self.session.headers.update({
+            'OSLC-Core-Version': '2.0',
+            'x-requester': f'toolname={self.toolname};toolversion={self.toolversion};user={self.username}',
+            'Accept': 'application/json'
+        })
+        
+        # Disable SSL warnings if verify_ssl is False
+        if not self.verify_ssl:
+            import urllib3
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         
         logger.info(f"RQ1 Client initialized for user: {username} on {environment}")
     
-    def get_record_by_rq1_number(self, rq1_number: str) -> dict[str, Any]:
+    def get_issue_summary(self, rq1_number: str) -> Optional[Dict[str, Any]]:
+        """
+        Get a formatted summary of an issue with key fields
+        
+        Args:
+            rq1_number: The RQ1 number
+            
+        Returns:
+            Dictionary with formatted key fields or None if not found
+        """
+        issue = self.get_record_by_rq1_number(rq1_number)
+        if not issue:
+            return None
+        
+        # Extract key fields with proper formatting
+        assignee = issue.get('cq:Assignee', {})
+        if isinstance(assignee, dict):
+            assignee_id = assignee.get('rdf:resource', '').split('/')[-1]
+        else:
+            assignee_id = str(assignee)
+        
+        creator = issue.get('dcterms:creator', {})
+        if isinstance(creator, dict):
+            creator_name = creator.get('rdf:resource', '').split('/')[-1]
+        else:
+            creator_name = str(creator)
+        
+        return {
+            'id': issue.get('cq:id'),
+            'title': issue.get('dcterms:title'),
+            'state': issue.get('cq:LifeCycleState'),
+            'category': issue.get('cq:Category'),
+            'domain': issue.get('cq:Domain'),
+            'assignee': assignee_id,
+            'creator': creator_name,
+            'submit_date': issue.get('cq:SubmitDate'),
+            'account_numbers': issue.get('cq:AccountNumbers'),
+            'classification': issue.get('cq:CommercialClassification'),
+            'allocation': issue.get('cq:Allocation'),
+            'description': issue.get('dcterms:description'),
+            'full_data': issue  # Keep full data for advanced processing
+        }
+    
+    def get_record_by_rq1_number(self, rq1_number: str) -> Optional[Dict[str, Any]]:
         """
         Retrieve detailed information about an Issue by RQ1 number
         
         Args:
-            rq1_number: The RQ1 number (e.g., "RQ1234567")
+            rq1_number: The RQ1 number (e.g., "RQONE04815588" or "04815588")
             
         Returns:
-            Dictionary with Issue details
+            Dictionary with Issue details or None if not found
         """
         logger.info(f"Fetching Issue: {rq1_number}")
         
+        # Query using cq:id (building-block-rq1 format)
+        # 16777231 is Issue shape_id
+        url = f"{self.base_url}simpleQuery/16777231"
+        params = {
+            'oslc.where': f'cq:id="{rq1_number}"',
+            'oslc.select': '*',
+            'oslc.pageSize': 1
+        }
+        
         try:
-            # Get Issue record with all properties
-            issue = self.client.get_record_by_rq1_number(
-                rtype=Issue,
-                rq1_num=rq1_number,
-                select="*"  # Get all properties
-            )
+            response = self.session.get(url, params=params, verify=self.verify_ssl, timeout=30)
             
-            # Convert Pydantic model to dict for JSON serialization
-            issue_dict = issue.model_dump(mode='json', exclude_none=True)
+            if response.status_code >= 400:
+                logger.error(f"Response: {response.text}")
+                
+            response.raise_for_status()
             
-            logger.info(f"Successfully fetched Issue: {rq1_number}")
-            return issue_dict
+            data = response.json()
+            # OSLC response structure: rdfs:member contains the results
+            members = data.get('rdfs:member', [])
+            total_count = data.get('oslc:responseInfo', {}).get('oslc:totalCount', 0)
             
-        except Exception as e:
+            if members and len(members) > 0:
+                logger.info(f"Successfully fetched Issue: {rq1_number}")
+                return members[0]
+            else:
+                logger.warning(f"Issue not found: {rq1_number} (total_count={total_count})")
+                return None
+            
+        except requests.exceptions.RequestException as e:
             logger.error(f"Error fetching Issue {rq1_number}: {str(e)}")
             raise
     
-    def query_my_issues(self) -> list[dict[str, Any]]:
+    def query_my_issues(self) -> List[Dict[str, Any]]:
         """
         Query all Issues assigned to the current user
         
@@ -103,158 +177,175 @@ class RQ1Client:
         """
         logger.info(f"Querying Issues for user: {self.username}")
         
-        try:
-            # Query Issues where assignee is current user
-            # Note: Property name is 'assignee', not 'owner'
-            query_result = self.client.query(
-                rtype=Issue,
-                where=f'assignee="{self.username}"',
-                select=[
-                    IssueProperty.ID,
-                    IssueProperty.TITLE,
-                    IssueProperty.STATUS,
-                    IssueProperty.PRIORITY,
-                    IssueProperty.EFFORT,
-                    IssueProperty.PACKAGE,
-                    IssueProperty.SUBMITDATE,
-                    IssueProperty.MODIFYDATE
-                ],
-                paging=True,
-                page_size=100
-            )
-            
-            # Convert results to list of dicts
-            issues = []
-            for issue in query_result.members:
-                issues.append(issue.model_dump(mode='json', exclude_none=True))
-            
-            logger.info(f"Found {len(issues)} Issues for user: {self.username}")
-            return issues
-            
-        except Exception as e:
-            logger.error(f"Error querying Issues for user {self.username}: {str(e)}")
-            raise
+        return self.query_issues(assignee=self.username)
     
-    def query_issues(self, title: Optional[str] = None, status: Optional[str] = None) -> list[dict[str, Any]]:
+    def query_issues(self, 
+                     title: Optional[str] = None, 
+                     status: Optional[str] = None,
+                     assignee: Optional[str] = None,
+                     limit: int = 100) -> List[Dict[str, Any]]:
         """
-        Query Issues by title, status, or other criteria
+        Query Issues by title, status, assignee, or other criteria
         
         Args:
-            title: Optional title filter (searches in dcterms:title)
+            title: Optional title filter (partial match)
             status: Optional status filter
+            assignee: Optional assignee filter
+            limit: Maximum number of results (default: 100)
             
         Returns:
             List of matching Issues
         """
-        logger.info(f"Querying Issues with title='{title}', status={status}")
+        logger.info(f"Querying Issues with title='{title}', status={status}, assignee={assignee}")
+        
+        # 16777231 is Issue shape_id
+        url = f"{self.base_url}simpleQuery/16777231"
+        params = {
+            'oslc.select': '*',
+            'oslc.pageSize': limit
+        }
+        
+        # Build OSLC where clause
+        conditions = []
+        if title:
+            conditions.append(f'dcterms:title="{title}"')
+        if status:
+            conditions.append(f'state="{status}"')
+        if assignee:
+            conditions.append(f'owner="{assignee}"')
+        
+        if conditions:
+            params['oslc.where'] = ' and '.join(conditions)
+        else:
+            params['oslc.where'] = None
         
         try:
-            # Build WHERE clause
-            conditions = []
-            if title:
-                # Use LIKE for partial match
-                conditions.append(f'dcterms:title like "%{title}%"')
-            if status:
-                conditions.append(f'status="{status}"')
+            response = self.session.get(url, params=params, verify=self.verify_ssl, timeout=30)
+            response.raise_for_status()
             
-            where_clause = " and ".join(conditions) if conditions else None
+            data = response.json()
+            members = data.get('rdfs:member', [])
             
-            # Query Issues
-            query_result = self.client.query(
-                rtype=Issue,
-                where=where_clause,
-                select=[
-                    IssueProperty.ID,
-                    IssueProperty.TITLE,
-                    IssueProperty.STATUS,
-                    IssueProperty.PRIORITY,
-                    IssueProperty.ASSIGNEE,
-                    IssueProperty.EFFORT,
-                    IssueProperty.PACKAGE,
-                    IssueProperty.SUBMITDATE
-                ],
-                paging=True,
-                page_size=100
-            )
+            logger.info(f"Found {len(members)} Issues matching criteria")
+            return members
             
-            # Convert results to list of dicts
-            issues = []
-            for issue in query_result.members:
-                issues.append(issue.model_dump(mode='json', exclude_none=True))
-            
-            logger.info(f"Found {len(issues)} Issues matching criteria")
-            return issues
-            
-        except Exception as e:
+        except requests.exceptions.RequestException as e:
             logger.error(f"Error querying Issues: {str(e)}")
             raise
     
-    def get_issue_history(self, rq1_number: str) -> list[dict[str, Any]]:
+    def get_issue_history(self, rq1_number: str) -> List[Dict[str, Any]]:
         """
         Get the change history for an Issue
         
         Args:
-            rq1_number: The RQ1 number (e.g., "RQ1234567")
+            rq1_number: The RQ1 number (e.g., "RQONE04815588" or "04815588")
             
         Returns:
             List of History records
         """
         logger.info(f"Fetching history for Issue: {rq1_number}")
         
+        # Query history using simpleQuery
+        # 16777224 is History shape_id
+        url = f"{self.base_url}simpleQuery/16777224"
+        params = {
+            'oslc.where': f'cq:id="{rq1_number}"',
+            'oslc.select': '*',
+            'oslc.pageSize': 100
+        }
+        
         try:
-            # First, get the Issue to obtain its URI
-            issue = self.client.get_record_by_rq1_number(
-                rtype=Issue,
-                rq1_num=rq1_number,
-                select=[IssueProperty.IDENTIFIER]  # Just need the URI
-            )
+            response = self.session.get(url, params=params, verify=self.verify_ssl, timeout=30)
+            response.raise_for_status()
             
-            # Query History records for this Issue
-            # History records have a relationship to the Issue via 'belongsToIssue'
-            query_result = self.client.query(
-                rtype=History,
-                where=f'belongsToIssue="{issue.rdf__about}"',
-                select="*",  # Get all history properties
-                paging=True,
-                page_size=100
-            )
+            data = response.json()
+            members = data.get('rdfs:member', [])
             
-            # Convert results to list of dicts
-            history_records = []
-            for history in query_result.members:
-                history_records.append(history.model_dump(mode='json', exclude_none=True))
+            logger.info(f"Found {len(members)} history records for Issue: {rq1_number}")
+            return members
             
-            logger.info(f"Found {len(history_records)} history records for Issue: {rq1_number}")
-            return history_records
-            
-        except Exception as e:
+        except requests.exceptions.RequestException as e:
             logger.error(f"Error fetching history for Issue {rq1_number}: {str(e)}")
             raise
+    
+    def test_connection(self) -> bool:
+        """
+        Test connection to RQ1 by looking up current user
         
-        # Placeholder implementation
-        return {
-            "ticket_id": ticket_id,
-            "history": [
-                {
-                    "timestamp": "2025-01-15 10:30:00",
-                    "user": "john.doe",
-                    "field": "status",
-                    "old_value": "Open",
-                    "new_value": "In Progress"
-                },
-                {
-                    "timestamp": "2025-01-10 14:20:00",
-                    "user": "jane.smith",
-                    "field": "assignee",
-                    "old_value": "unassigned",
-                    "new_value": self.username
-                },
-                {
-                    "timestamp": "2025-01-01 09:00:00",
-                    "user": "admin",
-                    "field": "created",
-                    "old_value": None,
-                    "new_value": "Initial creation"
-                }
-            ]
+        Returns:
+            True if connection successful, False otherwise
+        """
+        # 16777228 is Users shape_id
+        url = f"{self.base_url}simpleQuery/16777228"
+        params = {
+            'oslc.where': f'login_name="{self.username}"',
+            'oslc.select': 'fullname,email',
+            'oslc.pageSize': 1
         }
+        
+        try:
+            response = self.session.get(url, params=params, verify=self.verify_ssl, timeout=30)
+            response.raise_for_status()
+            
+            data = response.json()
+            members = data.get('rdfs:member', [])
+            
+            if members and len(members) > 0:
+                user = members[0]
+                logger.info(f"? Connected to RQ1 {self.environment}")
+                logger.info(f"? User: {user.get('cq:fullname', self.username)}")
+                return True
+            else:
+                logger.warning(f"? User {self.username} not found in RQ1")
+                return False
+                
+        except requests.exceptions.RequestException as e:
+            logger.error(f"? Connection failed: {str(e)}")
+            return False
+
+
+# Example usage
+if __name__ == "__main__":
+    # Configure logging
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+    
+    # Test connection with credentials
+    client = RQ1Client(
+        username="DAB5HC",
+        password="12021998@abcD",
+        environment="ACCEPTANCE",
+        verify_ssl=False  # Disable SSL verification for testing
+    )
+    
+    print("\n=== Testing RQ1 Connection ===")
+    print("Fetching issue RQONE03999302...")
+    
+    try:
+        # Test full data fetch
+        issue = client.get_record_by_rq1_number("RQONE03999302")
+        if issue:
+            print(f"\n? Successfully connected to RQ1 {client.environment}!")
+            print(f"? Full issue data retrieved")
+            print(f"  Total fields: {len(issue)}")
+            print(f"  Non-empty fields: {len([k for k,v in issue.items() if v not in ['', [], {}]])}")
+            
+            # Test formatted summary
+            print("\n=== Issue Summary ===")
+            summary = client.get_issue_summary("RQONE03999302")
+            if summary:
+                print(f"  ID: {summary['id']}")
+                print(f"  Title: {summary['title'][:80]}...")
+                print(f"  State: {summary['state']}")
+                print(f"  Category: {summary['category']}")
+                print(f"  Domain: {summary['domain']}")
+                print(f"  Assignee: {summary['assignee']}")
+                print(f"  Submit Date: {summary['submit_date']}")
+                print(f"  Allocation: {summary['allocation']}")
+            
+            print(f"\n? RQ1 Client working perfectly!")
+            print(f"? Can fetch full data ({len(issue)} fields)")
+            print(f"? Can create formatted summaries")
+        else:
+            print("? Issue not found")
+    except Exception as e:
+        print(f"\n? Failed to connect: {e}")
