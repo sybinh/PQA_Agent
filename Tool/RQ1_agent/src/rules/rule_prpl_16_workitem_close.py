@@ -108,6 +108,6 @@ class Rule_Workitem_Close:
                 f"{workitem_type} {workitem_id} is in {state} state.\n"
                 f"Planned date: {planned_date.strftime('%Y-%m-%d')} ({days_overdue} days ago)\n"
                 f"Current date: {now.strftime('%Y-%m-%d')}\n\n"
-                f"Workitem should be in Closed, Canceled, or Implemented state."
+                f"Hint: Workitem should be in Closed, Canceled, or Implemented state."
             )
         )

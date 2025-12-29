@@ -175,7 +175,7 @@ class Rule_Bc_CheckPstDates:
                     f"BC {bc_id} planned date ({bc_planned_date.strftime('%Y-%m-%d')}) "
                     f"is later than requested delivery date(s) of {len(violations)} mapped PST(s):\n"
                     f"{violation_details}\n\n"
-                    f"BC may not meet delivery commitments."
+                    f"Hint: BC may not meet delivery commitments."
                 ),
                 violations=violations
             )

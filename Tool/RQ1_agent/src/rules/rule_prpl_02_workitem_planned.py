@@ -103,6 +103,6 @@ class Rule_Workitem_PlannedDate:
             description=(
                 f"{workitem_type} {workitem_id} is in {state} state.\n"
                 f"Planned date is not entered in planning tab.\n\n"
-                f"Active workitems must have planned dates for proper scheduling."
+                f"Hint: Active workitems must have planned dates for proper scheduling."
             )
         )

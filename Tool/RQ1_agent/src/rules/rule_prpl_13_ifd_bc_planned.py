@@ -157,7 +157,7 @@ class Rule_IFD_BcPlannedDate:
                     f"IFD {ifd_id} is in {ifd_state.value} state.\n"
                     f"{len(overdue_bcs)} mapped BC(s) are past their planned dates:\n"
                     f"{bc_details}\n\n"
-                    f"IFD should be in IMPLEMENTED or CLOSED state."
+                    f"Hint: IFD should be in IMPLEMENTED or CLOSED state."
                 ),
                 violations=overdue_bcs
             )

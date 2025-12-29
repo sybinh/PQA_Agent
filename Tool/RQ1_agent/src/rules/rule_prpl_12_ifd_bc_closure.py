@@ -142,7 +142,7 @@ class Rule_IFD_BcClosure:
                     f"IFD {ifd_id} is in {ifd_state.value} state.\n"
                     f"All {len(self.mapped_bcs)} mapped BC-Releases are Closed or Canceled:\n"
                     f"{bc_summary}\n\n"
-                    f"IFD should be in CLOSED or IMPLEMENTED state."
+                    f"Hint: IFD should be in CLOSED or IMPLEMENTED state."
                 )
             )
         
