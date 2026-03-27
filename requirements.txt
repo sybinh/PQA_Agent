@@ -1,0 +1,8 @@
+﻿
+building-block-rq1==1.6.0
+fastmcp==2.14.1
+python-dotenv==1.2.1
+pwinput==1.0.3
+requests==2.32.5
+
+
