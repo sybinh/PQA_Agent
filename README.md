@@ -1,4 +1,4 @@
-﻿# RQ1 PRPL Validation Tool
+﻿# Quality Check
 
 **Version 1.2** - Automated validation tool for RQ1 PRPL rules, targeting QAM, QAMi and BBM rule sets.
 
@@ -66,7 +66,7 @@ RQ1_agent/
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/sybinh/PQA_Agent.git
+git clone https://github.com/sybinh/Quality_Check.git
 cd RQ1_agent
 ```
 
