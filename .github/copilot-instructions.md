@@ -1,78 +1,57 @@
 ﻿<!-- Use this file to provide workspace-specific custom instructions to Copilot. For more details, visit https://code.visualstudio.com/docs/copilot/copilot-customization#_use-a-githubcopilotinstructionsmd-file -->
 
-## Project: RQ1 MCP Server
+## Project: RQ1 PRPL Validation Tool
 
-This is a Model Context Protocol (MCP) server for integrating with RQ1/ClearQuest ticketing system.
+This is a Python-based automated validation tool for RQ1 PRPL rules, targeting QAM, QAMi and BBM rule sets. Engineers and PQAs run it to find deviations in their RQ1 items before review meetings.
 
 ### References
-- MCP Documentation: https://modelcontextprotocol.io
-- Python SDK: https://github.com/modelcontextprotocol/python-sdk
+- RQ1 library: `building-block-rq1-ref/` (local copy, original repo has restricted access)
 
 ### Project Details
-- **Language**: Python
-- **Purpose**: Provide AI assistant access to RQ1 ticketing system
+- **Language**: Python 3.11
+- **Purpose**: Validate RQ1 items (BC, IFD, Release, Workitem) against PRPL business rules
+- **Deployment**: Standalone `.exe` + PowerShell wrapper, or Python script directly
 - **Authentication**: Environment variables (RQ1_USER, RQ1_PASSWORD, RQ1_TOOLNAME, RQ1_TOOLVERSION)
 
 ### Project Structure
 ```
 RQ1_agent/
-??? docs/                    # All documentation (English only, no emoji)
-?   ??? RULES_COMPLETE.md   # All 101 rules (single source of truth)
-?   ??? EXCEL_TO_JAVA_MAPPING.md
-?   ??? IMPLEMENTATION_GUIDE.md
-??? scripts/                 # Excel parsing utilities
-?   ??? parse_excel_rules.py
-?   ??? excel_converter.py
-?   ??? excel_change_detector.py
-??? src/                     # Source code
-?   ??? rq1_client.py       # RQ1 client (TO BE IMPLEMENTED)
-?   ??? rq1_server.py       # MCP server
-?   ??? test_connection.py
-??? rq1/POST_V_1.0.3/       # Reference data (Java/VBS rules)
+  rules/                   # PRPL rule implementations (12 rules, one file per rule)
+  docs/                    # Documentation (English only, no emoji)
+    RULES_COMPLETE.md      # All 101 Excel rules (BBM + QAM + IPT)
+    EXCEL_TO_JAVA_MAPPING.md
+    IMPLEMENTATION_GUIDE.md
+  scripts/                 # Excel parsing and rule analysis utilities
+  tests/                   # Test scripts
+  output/executables/      # Latest release package (validate.ps1 + exe)
+  building-block-rq1-ref/  # RQ1 library reference (local copy)
+  validate_user_items.py   # Main script
 ```
 
-### Development Phases
+### Current State
 
-#### Phase 1: RQ1 Data Access (IN PROGRESS)
-**Goal**: Build and test basic RQ1 data retrieval
+- 12 PRPL rules implemented and working in production
+- Standalone executable deployed to team
+- Password caching via PowerShell wrapper
+- Target rule sets: QAM, QAMi, BBM
 
-**Progress**:
-- [x] Setup project structure
-- [x] Install building-block-rq1 library (v1.6.0)
-- [x] Define 4 MCP tools (get_issue_details, query_my_issues, query_issues, get_issue_history)
-- [x] Parse all 101 Excel rules (BBM 23 + QAM 22 + IPT 56)
-- [x] Map Excel rules to 37 Java rules from POST Tool
-- [x] Organize documentation in docs/ folder
-- [ ] **PENDING**: Implement rq1_client.py using building-block-rq1
-- [ ] **PENDING**: Test connection with ACCEPTANCE environment
-- [ ] **PENDING**: Verify all tools work correctly
+### Rule Files
 
-#### Phase 2: Rule Implementation (READY TO START)
-**Status**: Excel analysis complete, ready for implementation
-- **Total Excel Rules**: 101 (BBM 23 + QAM 22 + IPT 56)
-- **Total Java Rules**: 37 from POST Tool
-- **Intersection**: ~30-36 rules with BOTH Excel + Java backing
+Each rule is in `rules/rule_prpl_XX_<name>.py` with a standard interface:
+- Class with `execute()` method returning a result with `passed`, `severity`, `description`
+- Severity is either `WARNING` (affects pass rate) or `INFO` (informational)
 
-**Excel Parser**: COMPLETE & OPTIMIZED
-- Script: `scripts/parse_excel_rules.py`
-- Features: Priority sorting, grouping by execution level
-- Output: Consolidated docs/RULES_COMPLETE.md
-- Reusable: Ready for future Excel versions
+### Adding New Rules
 
-**Priority Breakdown**:
-- CRITICAL (mandatory): 23 rules (BBM 9 + QAM 10 + IPT 4)
-- HIGH (optional): 22 rules (BBM 6 + IPT 16)
-- MEDIUM (new): 3 rules (QAM 3)
-- LOW (open): 7 rules (QAM 7)
-- SKIP (outdated): 12 rules
-- N/A (not specified): 34 rules
+1. Create `rules/rule_prpl_XX_<name>.py`
+2. Import and call in `validate_user_items.py`
+3. Add test in `tests/`
+4. Rebuild with `build_exe.ps1`
 
-**Phase 2A**: Top 10 priority rules (30-40 hours)
-- All have BOTH Excel (official process) + Java (proven implementation)
-- See docs/EXCEL_TO_JAVA_MAPPING.md for details
-- See docs/IMPLEMENTATION_GUIDE.md for step-by-step process
+See `docs/IMPLEMENTATION_GUIDE.md` for the full process.
 
-**Phase 2B**: Remaining 26 rules with Excel+Java backing
+### Future Potential (not current scope)
 
-#### Phase 3: Integration (FUTURE)
-**Status**: After Phase 1 & 2 complete
+- RAG / AI assistant integration for natural language queries
+- IPT rule set extension
+- Automated reporting

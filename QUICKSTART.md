@@ -1,6 +1,6 @@
 ﻿# RQ1 PRPL Validator - Quick Start Guide
 
-## ?? What You Get
+##  What You Get
 
 Automated RQ1 PRPL rules validation tool with **3 usage modes**:
 1. **Console Tool** - Direct command line validation
@@ -11,9 +11,9 @@ Automated RQ1 PRPL rules validation tool with **3 usage modes**:
 
 ---
 
-## ?? Two Deployment Options
+##  Two Deployment Options
 
-### Option A: Executable Package (Recommended) ?
+### Option A: Executable Package (Recommended) 
 
 **No Python needed! Just run the .exe files.**
 
@@ -88,9 +88,9 @@ Automated RQ1 PRPL rules validation tool with **3 usage modes**:
    ```
 
 2. **No other requirements!** 
-   - ? Git NOT needed (offline install included)
-   - ? GitHub access NOT needed (all wheels included)
-   - ? VPN NOT needed (everything is local)
+   -  Git NOT needed (offline install included)
+   -  GitHub access NOT needed (all wheels included)
+   -  VPN NOT needed (everything is local)
 
 #### Step 1: Extract Package
 
@@ -159,13 +159,13 @@ The script will:
 - Read your username from `.env`
 - Prompt for password (hidden input)
 - Store credentials in environment variables (session-only)
-- **No password in files!** ??
+- **No password in files!** 
 
 **Note**: You need to run `setup_credentials.ps1` each time you open a new terminal.
 
 ### Step 4: Configure VS Code
 
-Open VS Code ? Settings (Ctrl+,) ? Search "copilot mcp"
+Open VS Code  Settings (Ctrl+,)  Search "copilot mcp"
 
 Click "Edit in settings.json" and add:
 
@@ -204,7 +204,7 @@ Close VS Code completely and reopen.
 
 ---
 
-## ?? Using the Tool
+##  Using the Tool
 
 ### Primary Method: Copilot Chat (Recommended)
 
@@ -230,7 +230,7 @@ When you ask Copilot to validate a user:
 
 ```
 @pqa_validator validate IOH81HC
-                      ?
+                      
             Target user to check
             (can be anyone)
 ```
@@ -257,7 +257,7 @@ python validate_user_items.py IOH81HC
 
 ---
 
-## ?? What Can It Do?
+##  What Can It Do
 
 ### 1. Full User Validation
 ```
@@ -267,7 +267,7 @@ Checks all Issues, Releases, Workitems against 11 PRPL rules.
 
 ### 2. List Available Rules
 ```
-What PRPL rules are available?
+What PRPL rules are available
 ```
 Shows all 11 implemented rules with descriptions.
 
@@ -279,9 +279,9 @@ Focus on one rule across all items.
 
 ---
 
-## ?? Troubleshooting
+##  Troubleshooting
 
-### Issue 1: Python Version Too Old ??
+### Issue 1: Python Version Too Old 
 
 **Error:** `Package 'mcp' requires a different Python: 3.9.2 not in '>=3.10'`
 
@@ -366,10 +366,10 @@ Update VS Code settings.json to use absolute path:
 python -m venv .venv
 
 # Reload VS Code window
-# Ctrl+Shift+P ? "Developer: Reload Window"
+# Ctrl+Shift+P  "Developer: Reload Window"
 
 # Select Python interpreter
-# Ctrl+Shift+P ? "Python: Select Interpreter"
+# Ctrl+Shift+P  "Python: Select Interpreter"
 # Choose: .\.venv\Scripts\python.exe
 ```
 
@@ -395,12 +395,12 @@ If you see this, you're using wrong requirements file.
 .\install_offline.ps1
 
 # NOT this (needs GitHub access):
-# pip install -r requirements.txt  ?
+# pip install -r requirements.txt  
 ```
 
 ---
 
-## ?? Quick Reference
+##  Quick Reference
 
 ### Daily Workflow (Copilot Chat)
 
@@ -468,25 +468,25 @@ python mcp_server_fast.py
 
 ```
 pqa_validator/
-??? .env                      ? Your RQ1 username (RQ1_USER=XXX)
-??? setup_credentials.ps1     ? Run this to enter password
-??? validate_user_items.py    ? Main script to check compliance
-??? mcp_server_fast.py        ? Copilot integration server
-??? install_offline.ps1       ? One-time setup
-??? wheels/                   ? All dependencies (49 packages)
-??? QUICKSTART.md            ? This file
+ .env                       Your RQ1 username (RQ1_USER=XXX)
+ setup_credentials.ps1      Run this to enter password
+ validate_user_items.py     Main script to check compliance
+ mcp_server_fast.py         Copilot integration server
+ install_offline.ps1        One-time setup
+ wheels/                    All dependencies (49 packages)
+ QUICKSTART.md             This file
 ```
 
 ---
 
-## ?? Detailed Documentation
+##  Detailed Documentation
 
 - **Full Setup Guide:** `VSCODE_SETUP.md`
 - **Project Info:** `README.md`
 
 ---
 
-## ?? Need Help?
+##  Need Help
 
 1. Check `VSCODE_SETUP.md` for detailed troubleshooting
 2. Contact PQA team
@@ -494,18 +494,18 @@ pqa_validator/
 
 ---
 
-## ?? Current Status
+##  Current Status
 
-? **Phase 1 Complete:** 11 priority PRPL rules
+ **Phase 1 Complete:** 11 priority PRPL rules
 - PRPL 01, 02, 03, 07: Basic validations
 - PRPL 11, 12, 13: IFD checks
 - PRPL 14, 15, 16, 18: Advanced validations
 
-?? **Phase 2 In Progress:** Additional 26 rules
+ **Phase 2 In Progress:** Additional 26 rules
 
 ---
 
-## ?? Security Note
+##  Security Note
 
 - Never commit `.env` file to git
 - Store RQ1 password securely
