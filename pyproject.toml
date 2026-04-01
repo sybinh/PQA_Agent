@@ -1,27 +1,23 @@
 [project]
-name = "PQA_Agent"
-version = "1.0.0"
-description = "MCP server for RQ1/ClearQuest integration - PQA Agent for developer workflow"
-authors = [{ name = "Your Name", email = "your.email@example.com" }]
+name = "quality-check"
+version = "1.1.0"
+description = "Automated validation tool for RQ1 QAMi/QAM/BBM rules"
+authors = [{ name = "Dang Sy Binh", email = "dab5hc@bosch.com" }]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "mcp>=1.2.0",
-    "httpx>=0.27.0",
+    "building-block-rq1==1.6.0",
+    "python-dotenv>=1.2.1",
+    "pwinput>=1.0.3",
+    "requests>=2.32.5",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
-    "pytest-asyncio>=0.24.0",
+    "pyinstaller>=6.0.0",
 ]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.uv]
-dev-dependencies = [
-    "pytest>=8.0.0",
-    "pytest-asyncio>=0.24.0",
-]
