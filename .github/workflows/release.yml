@@ -32,15 +32,7 @@ jobs:
             --name "validate_user_items" `
             --noconfirm `
             --clean `
-            --hidden-import "rq1" `
-            --hidden-import "rq1.base" `
-            --hidden-import "rq1.issue" `
-            --hidden-import "rq1.release" `
-            --hidden-import "rq1.workitem" `
-            --hidden-import "rq1.users" `
-            --hidden-import "rq1.issuereleasemap" `
-            --hidden-import "rq1.releasereleasemap" `
-            --hidden-import "rq1.models" `
+            --collect-all "rq1" `
             --hidden-import "rules.rule_prpl_01_bc_requested_state" `
             --hidden-import "rules.rule_prpl_02_workitem_planned" `
             --hidden-import "rules.rule_prpl_03_conflicted_state" `
