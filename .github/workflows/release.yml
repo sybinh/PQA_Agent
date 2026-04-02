@@ -1,0 +1,78 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on tags like v1.2, v1.2.1
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
+
+      - name: Build exe with PyInstaller
+        run: |
+          pyinstaller --onefile `
+            --name "validate_user_items" `
+            --noconfirm `
+            --clean `
+            --hidden-import "building_block_rq1" `
+            --hidden-import "building_block_rq1.rq1_sdk" `
+            --hidden-import "rules.rule_prpl_01_bc_requested_state" `
+            --hidden-import "rules.rule_prpl_02_workitem_planned" `
+            --hidden-import "rules.rule_prpl_03_conflicted_state" `
+            --hidden-import "rules.rule_prpl_06_ifd_defect_attributes" `
+            --hidden-import "rules.rule_prpl_07_bc_pst_dates" `
+            --hidden-import "rules.rule_prpl_11_ifd_sla" `
+            --hidden-import "rules.rule_prpl_12_ifd_bc_closure" `
+            --hidden-import "rules.rule_prpl_13_ifd_bc_planned" `
+            --hidden-import "rules.rule_prpl_14_ifd_isw_commitment" `
+            --hidden-import "rules.rule_prpl_15_release_closure" `
+            --hidden-import "rules.rule_prpl_16_workitem_close" `
+            --hidden-import "rules.rule_prpl_18_ifd_isw_commitment_delay" `
+            validate_user_items.py
+
+      - name: Create release package
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $dir = "release_package"
+          New-Item -ItemType Directory -Path $dir
+          Copy-Item "dist\validate_user_items.exe" "$dir\"
+          Copy-Item "output\executables\validate.ps1" "$dir\"
+          Copy-Item "output\executables\.env.example" "$dir\"
+          Copy-Item "output\executables\SETUP.md" "$dir\"
+          Copy-Item "output\executables\COPILOT_INSTRUCTIONS.md" "$dir\"
+          Copy-Item "output\executables\README.md" "$dir\"
+          Compress-Archive -Path "$dir\*" -DestinationPath "Quality_Check_${tag}.zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Quality Check ${{ github.ref_name }}"
+          body: |
+            ## Quality Check ${{ github.ref_name }}
+
+            ### Download
+            Extract `Quality_Check_${{ github.ref_name }}.zip` and follow `SETUP.md`.
+
+            ### What's included
+            - `validate_user_items.exe` - standalone executable
+            - `validate.ps1` - PowerShell wrapper (password caching)
+            - `.env.example` - credentials template
+            - `SETUP.md` - setup instructions
+            - `COPILOT_INSTRUCTIONS.md` - GitHub Copilot context
+            - `README.md` - usage guide
+          files: Quality_Check_${{ github.ref_name }}.zip
+          draft: false
+          prerelease: false
