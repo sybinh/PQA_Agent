@@ -22,9 +22,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Install RQ1 library as regular install (not editable) so PyInstaller can bundle it
-          pip install building-block-rq1-ref/
           pip install -r requirements.txt pyinstaller
+          # Force non-editable install so PyInstaller can bundle rq1 into the exe
+          # (editable installs use .pth symlinks which PyInstaller cannot follow)
+          pip install --force-reinstall --no-deps building-block-rq1-ref/
 
       - name: Build exe with PyInstaller
         run: |
@@ -32,6 +33,7 @@ jobs:
             --name "validate_user_items" `
             --noconfirm `
             --clean `
+            --paths "building-block-rq1-ref/src" `
             --collect-all "rq1" `
             --hidden-import "rules.rule_prpl_01_bc_requested_state" `
             --hidden-import "rules.rule_prpl_02_workitem_planned" `

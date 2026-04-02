@@ -1,5 +1,5 @@
 ﻿
-building-block-rq1==1.6.0
+-e building-block-rq1-ref/
 python-dotenv==1.2.1
 pwinput==1.0.3
 requests==2.32.5
