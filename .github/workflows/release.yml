@@ -21,7 +21,10 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt pyinstaller
+        run: |
+          # Install RQ1 library as regular install (not editable) so PyInstaller can bundle it
+          pip install building-block-rq1-ref/
+          pip install -r requirements.txt pyinstaller
 
       - name: Build exe with PyInstaller
         run: |
