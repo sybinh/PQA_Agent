@@ -491,7 +491,8 @@ def validate_user_items(target_username: str, login_username: str = None):
                 'id': getattr(release, 'id', 'UNKNOWN'),
                 'dcterms__title': getattr(release, 'dcterms__title', ''),
                 'lifecyclestate': getattr(release, 'lifecyclestate', ''),
-                'planneddate': getattr(release, 'planneddate', None)
+                'planneddate': getattr(release, 'planneddate', None),
+                'cq__Type': release_cq_type
             }
             
             # PRPL 03: Check for Conflicted state
@@ -507,24 +508,21 @@ def validate_user_items(target_username: str, login_username: str = None):
                     'description': result03.description
                 })
             
-            # PRPL 15: BC/FC Closure check (only BC/FC in Planned/Developed state)
-            if release_type in ['BC', 'FC']:
-                rule15 = Rule_Release_Closure(release_data)
-                result15 = rule15.execute()
-                total_checks += 1
-                if not result15.passed:
-                    violations.append({
-                        'rule': 'PRPL 15',
-                        'severity': result15.severity,
-                        'item_id': release.id,
-                        'item_title': release.dcterms__title,
-                        'description': result15.description
-                    })
+            # PRPL 15: Release closure check (all types: BC, BX, FC, FX, etc.)
+            rule15 = Rule_Release_Closure(release_data)
+            result15 = rule15.execute()
+            total_checks += 1
+            if not result15.passed:
+                violations.append({
+                    'rule': 'PRPL 15',
+                    'severity': result15.severity,
+                    'item_id': release.id,
+                    'item_title': release.dcterms__title,
+                    'description': result15.description
+                })
             
             # Only validate BC/BX types (BC and BX are treated the same)
             if not is_bc_or_bx:
-                if release.id == 'RQONE04659895':
-                    print(f"\n     [DEBUG] BC {release.id}: is_bc_or_bx={is_bc_or_bx}, skipped!")
                 continue
             
             # Get mapped PVER/PVAR for this BC/BX via Releasereleasemap

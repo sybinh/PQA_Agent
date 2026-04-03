@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 """
-PRPL 15.00.00: Release not closed after planned date for BC and FC
+PRPL 15.00.00: Release not closed after planned date
 
 Rule Logic:
-- For BC/FC Releases in Planned or Developed state
+- For all Release types (BC, BX, FC, FX, etc.) in Planned or Developed state
 - Check if planned date has passed
 - If yes, Release should be Closed
 
 Requirements:
-- BC/FC must be closed after planned delivery date
+- Release must be closed after planned delivery date
 - Excludes: Canceled, Conflicted, Closed states
 - Only checks: Planned, Developed states
 
 Pseudo Code from Excel:
-if bcRelease = canceledOrConflicted then return
-if bcRelease.PLANNED_DATE = isInThePast && (bcRelease.LIFE_CYCLE_STATE = PLANNED || bcRelease.LIFE_CYCLE_STATE = DEVELOPED) then
-    Warning "BCR not closed after planned date"
+if release = canceledOrConflicted then return
+if release.PLANNED_DATE = isInThePast && (release.LIFE_CYCLE_STATE = PLANNED || release.LIFE_CYCLE_STATE = DEVELOPED) then
+    Warning "Release not closed after planned date"
 """
 
 from enum import Enum
@@ -44,9 +44,9 @@ class ValidationResult:
 
 class Rule_Release_Closure:
     """
-    PRPL 15.00.00: Release not closed after planned date for BC and FC
+    PRPL 15.00.00: Release not closed after planned date
     
-    Checks if a BC/FC Release should be closed because planned date has passed.
+    Checks if any Release (BC, BX, FC, FX, etc.) should be closed because planned date has passed.
     """
     
     RULE_ID = "PRPL 15"
@@ -58,7 +58,7 @@ class Rule_Release_Closure:
             release_data: Dict with keys: id, releasetype, lifecyclestate, planneddate, dcterms__title
         """
         self.release_id = release_data.get('id', 'UNKNOWN')
-        self.release_type = release_data.get('releasetype', '')
+        self.release_type = release_data.get('cq__Type', '')
         self.state = release_data.get('lifecyclestate', '')
         self.planned_date = release_data.get('planneddate')
         self.title = release_data.get('dcterms__title', '')
@@ -70,14 +70,6 @@ class Rule_Release_Closure:
         Returns:
             ValidationResult with passed status and details
         """
-        # Only check BC and FC releases
-        if self.release_type not in ['BC', 'FC']:
-            return ValidationResult(
-                passed=True,
-                severity="INFO",
-                description="Not a BC or FC release"
-            )
-        
         # Skip Canceled, Conflicted, Closed
         if self.state in [LifeCycleState_Release.CANCELED.value,
                           LifeCycleState_Release.CONFLICTED.value,
