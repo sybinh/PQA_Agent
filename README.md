@@ -1,6 +1,6 @@
 ﻿# Quality Check
 
-**Version 1.2** - Automated validation tool for RQ1 PRPL rules, targeting QAM, QAMi and BBM rule sets.
+**Version 1.3** - Automated validation tool for RQ1 PRPL rules, targeting QAM, QAMi and BBM rule sets.
 
 ## Overview
 
