@@ -110,6 +110,20 @@ Pass rate: 100.0%
 
 ---
 
+## Report an Issue
+
+If you encounter a bug or unexpected result, please open a GitHub issue:
+
+https://github.com/sybinh/Quality_Check/issues/new
+
+Include in your report:
+- Your NTID (e.g. DAB5HC)
+- The rule that triggered incorrectly (e.g. PRPL 15)
+- The item ID (e.g. RQONE04659895)
+- Copy-paste the full output from the terminal
+
+---
+
 ## Password Caching
 
 **How it works:**
